@@ -2,26 +2,32 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-            Utilisateur1=new Utilisateur();
-            Utilisateur2=new Utilisateur();
-            Ticket1=new Ticket();
-            Ticket2=new Ticket();
-        }
-    Affiche(numero_unique.Ticket1);
-    Affiche(numero_unique.Ticket2);
+        Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
+        Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
 
-    PrisEnCharge(numero_unique.Ticket1);
-    Affiche(numero_unique.Ticket1);
+        Utilisateur sidibe = new Utilisateur(56, "Sidibe", "sidibe@2IE.bf");
+        Utilisateur bernadette = new Utilisateur(75, "Bernadette", "bernadette@2IE.bf");
 
-    Resolu(numero_unique.Ticket1)
-    Affiche(numero_unique.Ticket1);
+        Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
 
+        Ticket ticketSidibe = new Ticket(325842, "probleme d'affichage, L'affichage de l'ecran est pixelise", "Urgent", "ouvert");
+        Ticket ticketBernadette = new Ticket(648656, "plus d'internet", "le wifi est une theorie ou une realite dans le Batiment B", "necessaire", "ouvert");
 
-    PrisEnCharge(numero_unique.Ticket2);
-    Affiche(numero_unique.Ticket2);
+        System.out.println("Evolution du ticket de Sidibe");
 
-    Resolu(numero_unique.Ticket2);
-    Affiche(numero_unique.Ticket2);
+        ticketSidibe.PrendreEnCharge(325842);
+        ticketSidibe.Affiche(325842);
 
+        ticketSidibe.Resolu(325842);
+        ticketSidibe.Affiche(325842);
+
+        System.out.println("Evolution du ticket de Bernadette");
+
+        ticketBernadette.PrendreEnCharge(648656);
+        ticketBernadette.Affiche(648656);
+
+        ticketBernadette.Resolu(648656);
+        ticketBernadette.Affiche(648656);
+
+    }
 }
-

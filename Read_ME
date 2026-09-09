@@ -1,4 +1,5 @@
 Sujet C: Gestion de tickets d'assistance
+Applique au: Cas du systeme GLPI
 
 Membres
 BAMAZI Y. Esther
@@ -9,28 +10,45 @@ Lancer le programme
 
 Travail de conception
 1- Le besoin est
-Un systeme de gestion de tickets plus ou moins autonome qui permet aux utilisateurs de verifier l'etat de leur ticket en temps reel.
-2. Parmi les objets possibles nous avons donc un plaignant par exemple pour la classe Utilisateur
-Un ticket URGENT pour la classe de ticket
-3. POur la classe de personne
+Un systeme de gestion de tickets de type GLPI qui permet aux utilisateurs de
+a) Enregistrer un sinistre a travers un ticket de facon precise lieu, urgence etc
+b)verifier l'etat d'avancement de prise en charge de leur ticket en temps reel.
+Les actions principalent incluent:
+a)La creation d'un utilisateur
+b)La creation d'un ticket
+c) La consultation mais aussi la prise en charge du ticket
+2.Pour un objet prenons le cas d'un eleve, Sidibe disposant d'un ordinateur portable prete par son universite. Sidibe remarque que son ordinateur a des problemes d'affichage. Il le remarque en salle B6.5 lors d'un projet de Java. Il est imperatif que ce soucis soit resolu. Representons ce cas par un objet
+Utilisateur sidibe a qui on affecte un numero, il nous donne son nom et son addresse mail
+Lieu de l'incident, numero, numero de salle, le batiment des informaticiens
+Toutes ces informations sont renseignees dans le ticket qui a un numero unique, un titre une description une priorite et un etat
+Et ce ticket est affecte a un technicien qui va donc traiter le ticket
+3. Pour la classe de personne
 On identifie comme attribut le numero de la personne (int), son nom(string) et son addresse electronique(string)
 Pour le ticket les attributs sont le numero unique(float) le titre(string) la description (string) la priorite(string) ainsi que l'etat(string)
-En terme de visibilite, on reste largement sur du public meme si les methodes de recuperation d'information ou de changement d'etat doivent elles rester privees
-4. Pour la creation de chaque objet, on a besoin dans le cas d'une personne d'un numero genre par un randomiser, du nom que lon recupere aupres de lutilisateur ainsi que de son addresse electronique
+Pour le lieu, numero, nom, Batiment
+et pour le technicien numero et nom
+En terme de visibilite, on reste largement sur du public
+4. Pour la creation de chaque objet, on a besoin dans le cas d'une personne d'un numero on peut utiliser le numero etudiant ou le matricule, du nom que lon recupere aupres de lutilisateur ainsi que de son addresse electronique
 Pour la creation d'un ticket on recupere le titre, la description l'etat et la priorite aupres de la personne on lui assigne un numero unique et l'etat ouvert
-5. On propose comme methode
-PrisEnCharge(NumeroUniqueDuTicket) qui passe le ticket de l'etat ouvert a l'etat pris en charge
-Resolu(NumeroUniqueDuTicket) qui passe le ticket de l'etat pris en charge a l'etat resolu
-et Affiche(NumeroUniqueDuTicket) qui affiche l'etat du ticket numero NumeroUniqueDuTicket
+Le lieu, on en recupere un numero un nom et un batiment
+Et le technicien on aura un numero et un nom
+5. On propose comme methodes
+Les constructeurs de chaque classes
+PrendreEnCharge(NumeroUniqueDuTicket) qui passe le ticket de l'etat ouvert a l'etat pris en charge
+Resoudre(NumeroUniqueDuTicket) qui passe le ticket de l'etat pris en charge a l'etat resolu
+et AfficheEtat(NumeroUniqueDuTicket) qui affiche l'etat du ticket numero NumeroUniqueDuTicket
 
 Diagramme de classes
+cf diagramme_de_classe.png
 
 Deux choix expliquees
-On choisit de donner des arguments au methodes pour identifier correctement le ticket concerne
+On choisi de donner comme argument au methodes de ce dernier des ticket le numero unique pour identifier correctement le ticket concerne
 
 Difficultes rencontrees
 Recuperer le nom et l'email de l'utilisateur de facon dynamique
 Definir les methodes correctement
+Comprendre comment communiquent les classes
+
 
 Questions pour la revue
 
