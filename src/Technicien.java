@@ -1,14 +1,12 @@
 public class Technicien {
     int numero;
-    string nom;
-    string email;
+    String nom;
+    String email;
 
 
-    public Technicien(int numero, string nom) {
+    public Technicien(int numero, String nom, String email) {
         this.numero = numero;
         this.nom = nom;
         this.email = email;
     }
-
-
 }
