@@ -8,10 +8,13 @@ public class Main {
 
         Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
 
-        Ticket ticketSidibe = new Ticket("probleme d'affichage",
-                "L'affichage de l'ecran est pixelise", "Urgent", sidibe, salleB65);
-        Ticket ticketBernadette = new Ticket("plus d'internet",
-                "le wifi est une theorie ou une realite dans le Batiment B", "necessaire", bernadette, salleB67);
+        Ticket ticketSidibe = new TicketIncident("probleme d'affichage",
+                "L'affichage de l'ecran est pixelise", "Urgent", sidibe, salleB65,
+                "Ecran salle B6.5");
+
+        Ticket ticketBernadette = new TicketDemandeService("plus d'internet",
+                "le wifi est une theorie ou une realite dans le Batiment B", "necessaire",
+                bernadette, salleB67, "Reparation reseau Wifi");
 
         System.out.println("Evolution du ticket de Sidibe");
         ticketSidibe.affiche();
@@ -27,5 +30,12 @@ public class Main {
         ticketBernadette.affiche();
         ticketBernadette.resolu();
         ticketBernadette.affiche();
+
+        System.out.println();
+        System.out.println("Parcours polymorphe de tous les tickets");
+        Ticket[] tickets = { ticketSidibe, ticketBernadette };
+        for (Ticket t : tickets) {
+            System.out.println(t);
+        }
     }
 }
