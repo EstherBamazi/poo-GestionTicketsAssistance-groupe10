@@ -1,6 +1,6 @@
 import java.util.UUID;
 
-public class Ticket {
+public abstract class Ticket {
     String numero_unique;
     String titre;
     String description;
@@ -29,6 +29,8 @@ public class Ticket {
         return numero_unique;
     }
 
+    public abstract int delaiCibleHeures();
+
     public void prendreEnCharge(Technicien technicien) {
         this.technicien = technicien;
         this.etat = "pris en charge";
@@ -42,10 +44,16 @@ public class Ticket {
                 + " est desormais resolu, merci pour votre confiance");
     }
 
-    public void affiche() {
-        System.out.println("Ticket " + numero_unique
+    @Override
+    public String toString() {
+        return "Ticket " + numero_unique
                 + " | auteur : " + auteur.getNom()
                 + " | lieu : " + lieu.nom
-                + " | etat : " + etat);
+                + " | etat : " + etat
+                + " | delai cible : " + delaiCibleHeures() + "h";
+    }
+
+    public void affiche() {
+        System.out.println(toString());
     }
 }
