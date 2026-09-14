@@ -1,12 +1,15 @@
-public class Technicien {
+public class Technicien extends Personne{
     int numero;
     String nom;
     String email;
 
 
     public Technicien(int numero, String nom, String email) {
-        this.numero = numero;
-        this.nom = nom;
-        this.email = email;
+        super(numero,nom,email);
+    }
+
+    @Override
+    public String role(){
+        return "Technicien";
     }
 }

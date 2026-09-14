@@ -8,34 +8,32 @@ public class Main {
 
         Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
 
-        Ticket ticketSidibe = new TicketIncident("probleme d'affichage",
-                "L'affichage de l'ecran est pixelise", "Urgent", sidibe, salleB65,
-                "Ecran salle B6.5");
+        Ticket ticketSidibe = new TicketIncident(101, "Probleme d'affichage",
+                "L'affichage de l'ecran est pixelise", "HAUTE",
+                sidibe, salleB65, "Ecran salle B6.5");
 
-        Ticket ticketBernadette = new TicketDemandeService("plus d'internet",
-                "le wifi est une theorie ou une realite dans le Batiment B", "necessaire",
+        Ticket ticketBernadette = new TicketDemandeService(102, "Plus d'internet",
+                "Le wifi ne fonctionne plus dans le batiment B", "MOYENNE",
                 bernadette, salleB67, "Reparation reseau Wifi");
 
         System.out.println("Evolution du ticket de Sidibe");
-        ticketSidibe.affiche();
+        System.out.println(ticketSidibe);
         ticketSidibe.prendreEnCharge(superBob);
-        ticketSidibe.affiche();
-        ticketSidibe.resolu();
-        ticketSidibe.affiche();
+        System.out.println(ticketSidibe);
+        ticketSidibe.resoudre();
+        System.out.println(ticketSidibe);
 
         System.out.println();
-        System.out.println("Evolution du ticket de Bernadette");
-        ticketBernadette.affiche();
-        ticketBernadette.prendreEnCharge(superBob);
-        ticketBernadette.affiche();
-        ticketBernadette.resolu();
-        ticketBernadette.affiche();
+        System.out.println("Un ticket ouvert ne peut pas etre resolu directement");
+        System.out.println("Etat de t2 avant :" + ticketBernadette.getEtat());
+        ticketBernadette.resoudre();
+        System.out.println("Etat du ticket de Bernadette apres :" + ticketBernadette.getEtat());
 
         System.out.println();
         System.out.println("Parcours polymorphe de tous les tickets");
         Ticket[] tickets = { ticketSidibe, ticketBernadette };
         for (Ticket t : tickets) {
-            System.out.println(t);
+            System.out.println(t.getNumero() + " : " + t.delaiCibleHeures() + "h");
         }
     }
 }

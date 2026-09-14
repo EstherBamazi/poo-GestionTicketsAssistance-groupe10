@@ -1,9 +1,12 @@
 public class TicketDemandeService extends Ticket {
-    private String serviceDemande;
+    private final String serviceDemande;
 
-    public TicketDemandeService(String titre, String description, String priorite,
+    public TicketDemandeService(int numero, String titre, String description, String priorite,
                                 Utilisateur auteur, Lieu lieu, String serviceDemande) {
-        super(titre, description, priorite, auteur, lieu);
+        super(numero, titre, description, priorite, auteur, lieu);
+        if (serviceDemande == null || serviceDemande.trim().isEmpty()){
+            throw new IllegalArgumentException("Le service demande ne doit pas etre vide");
+        }
         this.serviceDemande = serviceDemande;
     }
 

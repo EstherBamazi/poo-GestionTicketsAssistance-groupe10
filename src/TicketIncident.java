@@ -1,10 +1,17 @@
 public class TicketIncident extends Ticket {
-    private String equipementConcerne;
+    private final String equipementConcerne;
 
-    public TicketIncident(String titre, String description, String priorite,
+    public TicketIncident(int numero, String titre, String description, String priorite,
                           Utilisateur auteur, Lieu lieu, String equipementConcerne) {
-        super(titre, description, priorite, auteur, lieu);
+        super(numero, titre, description, priorite, auteur, lieu);
+        if (equipementConcerne==null || equipementConcerne.isBlank()){
+            throw new IllegalArgumentException("L'equipement ne doit pas etre vide");
+        }
         this.equipementConcerne = equipementConcerne;
+    }
+
+    public String getEquipementConcerne(){
+        return getEquipementConcerne();
     }
 
     @Override

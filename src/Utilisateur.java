@@ -1,17 +1,16 @@
-public class Utilisateur {
+public class Utilisateur extends Personne{
     int numero;
     String nom;
-    String adrresse_electronique;
+    String email;
 
 
-    public Utilisateur(int numero, String nom, String adrresse_electronique) {
-        this.numero = numero;
-        this.nom = nom;
-        this.adrresse_electronique = adrresse_electronique;
+    public Utilisateur(int numero, String nom, String email) {
+        super(numero,nom,email);git pull
     }
 
-    public String getNom() {
-        return nom;
+    @Override
+    public String role(){
+        return "Utilisateur";
     }
 }
 
