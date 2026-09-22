@@ -1,27 +1,27 @@
-# Sujet C : Gestion de tickets d'assistance
+ Sujet C : Gestion de tickets d'assistance
 
 Appliqué au cas du système GLPI.
 POO en Java, ECUE IIAA511, Dr Babacar LEYE, 2iE, Semestre 5 IIAA.
 
-## Membres du groupe 10
+ Membres du groupe 10
 
 - BAMAZI Yesuwaba Esther
 - LOUE Rayan
 - KABORE Cedric
 
-## Lancer le programme
+ Lancer le programme
 
 Ouvrir le projet dans IntelliJ IDEA, puis exécuter la classe `Main`
 (bouton Run vert). L'évolution des tickets s'affiche dans la console.
 
-## Structure du dépôt
+ Structure du dépôt
 
 ```
 src/     classes Java et Main
 docs/    diagramme-classes.png
 ```
 
-## Le besoin
+ Le besoin
 
 Un système de gestion de tickets d'assistance de type GLPI qui permet
 aux utilisateurs de déclarer un incident ou une demande de service
@@ -36,9 +36,9 @@ Actions principales :
 4. résoudre le ticket
 5. afficher l'état courant d'un ticket
 
-## Travail de conception
+ Travail de conception
 
-### Les objets du système
+ Les objets du système
 
 Prenons le cas de Sidibé, étudiant disposant d'un ordinateur prêté par
 l'université. Il constate un problème d'affichage en salle B6.5 pendant
@@ -49,7 +49,7 @@ un projet Java. On représente ce cas par :
 - un `Ticket` : le numéro, le titre, la description, la priorité et l'état
 - un `Technicien` : celui qui prendra le ticket en charge
 
-### Les classes retenues et leur rôle
+ Les classes retenues et leur rôle
 
 | Classe | Rôle |
 |---|---|
@@ -62,9 +62,9 @@ un projet Java. On représente ce cas par :
 | `TicketDemandeService` | ticket demandant un service, délai cible 24 h |
 | `Main` | programme de démonstration |
 
-### Attributs et visibilité
+ Attributs et visibilité
 
-Tous les attributs sont **privés**. Ceux qui sont fixés à la création et
+Tous les attributs sont privés. Ceux qui sont fixés à la création et
 ne changent plus sont en plus déclarés `final`.
 
 - `Personne` : `numero` (int), `nom` (String), `email` (String)
@@ -75,7 +75,7 @@ ne changent plus sont en plus déclarés `final`.
 - `TicketIncident` ajoute `equipementConcerne` (String)
 - `TicketDemandeService` ajoute `serviceDemande` (String)
 
-### Construction des objets
+ Construction des objets
 
 Chaque constructeur reçoit toutes les données obligatoires et valide
 ses paramètres : un numéro doit être strictement positif, un texte ne
@@ -86,7 +86,7 @@ Deux valeurs ne sont pas reçues mais fixées par la classe `Ticket`
 elle-même : l'état, qui vaut `"OUVERT"` à la création, et le technicien,
 qui vaut `null` tant que personne n'a pris le ticket en charge.
 
-### Les méthodes
+ Les méthodes
 
 - `prendreEnCharge(Technicien)` : affecte un technicien et fait passer
   l'état de `"OUVERT"` à `"EN COURS"`
@@ -99,13 +99,13 @@ qui vaut `null` tant que personne n'a pris le ticket en charge.
   automatiquement par `System.out.println`
 - les accesseurs utiles, sans aucun setter
 
-## Diagramme de classes
+ Diagramme de classes
 
 Voir `docs/diagramme-classes.png`.
 
-## Deux choix expliqués
+ Deux choix expliqués
 
-**1. Deux hiérarchies avec classes abstraites.**
+1. Deux hiérarchies avec classes abstraites.
 `Ticket` est abstraite et déclare `delaiCibleHeures()` abstraite : un
 ticket générique n'a pas de sens métier, et chaque type impose son
 propre délai. `Personne` est abstraite pour la même raison, et pour que
@@ -113,13 +113,13 @@ les attributs communs à `Utilisateur` et `Technicien` ne soient écrits
 qu'une seule fois. Le programme principal manipule des `Ticket` et des
 `Personne` sans jamais tester leur classe réelle.
 
-**2. Des associations par objets plutôt que par du texte.**
+2. Des associations par objets plutôt que par du texte.
 Un `Ticket` ne stocke pas le nom de son auteur sous forme de chaîne, il
 contient directement l'objet `Utilisateur`, l'objet `Lieu` et, après
 prise en charge, l'objet `Technicien`. Le ticket interroge lui-même ses
 objets liés, et `prendreEnCharge` reçoit l'objet `Technicien` concerné.
 
-## Difficultés rencontrées
+ Difficultés rencontrées
 
 - Faire communiquer les classes entre elles. Résolu par les associations
   entre objets plutôt que par recopie de données.
@@ -131,51 +131,51 @@ objets liés, et `prendreEnCharge` reçoit l'objet `Technicien` concerné.
   ultérieure utiliserait une classe `Personne` concrète portant un ou
   plusieurs rôles, plutôt que deux sous-classes.
 
-## Questions pour la revue
+ Questions pour la revue
 
-**Peut-on modifier directement les données depuis `Main` ?**
+Peut-on modifier directement les données depuis `Main` ?
 Non. Tous les attributs sont privés, et ceux qui ne changent jamais sont
 `final`. Toute lecture passe par un accesseur, toute modification par
 une méthode de la classe.
 
-**Les constructeurs créent-ils des objets complets ?**
+Les constructeurs créent-ils des objets complets ?
 Oui. Chaque constructeur reçoit toutes les données obligatoires, valide
 numéros et textes, et refuse une valeur invalide. Un ticket naît
 toujours à l'état `"OUVERT"`, sans technicien affecté.
 
-**Les noms des méthodes correspondent-ils aux actions du système ?**
+Les noms des méthodes correspondent-ils aux actions du système ?
 Oui : `prendreEnCharge(Technicien)`, `resoudre()`, `delaiCibleHeures()`.
 L'affichage passe par `toString()` redéfinie.
 
-**Peut-on modifier l'état autrement qu'en utilisant les méthodes prévues ?**
+Peut-on modifier l'état autrement qu'en utilisant les méthodes prévues ?
 Non. `etat` est privé et n'a pas de setter. Seules `prendreEnCharge` et
 `resoudre` le modifient.
 
-**Les changements suivent-ils l'ordre demandé ?**
+Les changements suivent-ils l'ordre demandé ?
 Oui. `prendreEnCharge` n'agit que sur un ticket `"OUVERT"`, `resoudre`
 que sur un ticket `"EN COURS"`. Un appel hors séquence laisse l'état
 inchangé, ce que `Main` démontre explicitement.
 
-**S1. La relation classe fille / classe mère signifie-t-elle bien « est un » ?**
+S1. La relation classe fille / classe mère signifie-t-elle bien « est un » ?
 Oui : un incident est un ticket, une demande de service est un ticket,
 un utilisateur est une personne, un technicien est une personne.
 
-**S2. Les attributs communs sont-ils écrits une seule fois ?**
+S2. Les attributs communs sont-ils écrits une seule fois ?
 Oui. `numero`, `titre`, `description`, `priorite`, `etat`, `auteur`,
 `lieu` et `technicien` sont déclarés dans `Ticket`. `numero`, `nom` et
 `email` sont déclarés dans `Personne`. Les sous-classes ne déclarent que
 ce qu'elles ajoutent.
 
-**S3. Le programme principal utilise-t-il le type de la classe mère sans rechercher la classe réelle de l'objet ?**
+S3. Le programme principal utilise-t-il le type de la classe mère sans rechercher la classe réelle de l'objet ?
 Oui. `Main` déclare `Ticket ticketSidibe`, `Ticket[] tickets` et
 `Personne[] personnes`, et n'utilise aucun `instanceof`. Le délai cible
 affiché varie selon l'objet réel, pas selon le type déclaré.
 
-**S4. Quelle règle appliquer maintenant au projet ?**
+S4. Quelle règle appliquer maintenant au projet ?
 Placer dans la classe mère tout ce qui est commun, et ne laisser dans
 les classes filles que ce qui varie réellement d'un type à l'autre.
 
-## Sources consultéesgit add .
+ Sources consultées git add .
 git status
 
 - draw.io pour la construction du diagramme de classes
