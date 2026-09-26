@@ -1,38 +1,37 @@
-public abstract class Ticket {
+public abstract class Ticket implements Assignable {
     private final int numero;
     private final String titre;
     private final String description;
     private final String priorite;
     private final Utilisateur auteur;
     private final Lieu lieu;
-    private String etat;
+    private EtatTicket etat;
     private Technicien technicien;
 
-
     public Ticket(int numero, String titre, String description, String priorite, Utilisateur auteur, Lieu lieu) {
-        if (numero<=0){
+        if (numero <= 0) {
             throw new IllegalArgumentException("Le numero doit etre positif");
         }
-        if (titre == null || titre.isBlank()){
-            throw new IllegalArgumentException("Le titre de doit pas etre vide");
+        if (titre == null || titre.isBlank()) {
+            throw new IllegalArgumentException("Le titre ne doit pas etre vide");
         }
-        if (description == null || description.isBlank()){
-            throw new IllegalArgumentException("La description de doit pas etre vide");
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("La description ne doit pas etre vide");
         }
-        if (priorite == null || priorite.isBlank()){
-            throw new IllegalArgumentException("La priorite ne de doit pas etre vide");
+        if (priorite == null || priorite.isBlank()) {
+            throw new IllegalArgumentException("La priorite ne doit pas etre vide");
         }
-        if (auteur == null || lieu==null){
-            throw new IllegalArgumentException("auteur est lieu sont obligatoire");
+        if (auteur == null || lieu == null) {
+            throw new IllegalArgumentException("auteur et lieu sont obligatoires");
         }
         this.numero = numero;
-        this.etat = "ouvert";
         this.titre = titre;
         this.description = description;
         this.priorite = priorite;
         this.auteur = auteur;
         this.lieu = lieu;
-        this.technicien=technicien;
+        this.etat = EtatTicket.OUVERT;
+        this.technicien = null;
     }
 
     public String getDescription() {
@@ -43,15 +42,15 @@ public abstract class Ticket {
         return numero;
     }
 
-    public String getTitre(){
+    public String getTitre() {
         return titre;
     }
 
-    public String getPriorite(){
+    public String getPriorite() {
         return priorite;
     }
 
-    public String getEtat() {
+    public EtatTicket getEtat() {
         return etat;
     }
 
@@ -63,36 +62,60 @@ public abstract class Ticket {
         return lieu;
     }
 
+    public abstract int delaiCibleHeures();
+
+    // --- Assignable ---
+
+    @Override
+    public void assigner(Technicien technicien) {
+        if (this.etat == EtatTicket.RESOLU) {
+            throw new IllegalStateException(
+                    "Impossible d'assigner un technicien a un ticket deja resolu.");
+        }
+        this.technicien = technicien;
+    }
+
+    @Override
     public Technicien getTechnicien() {
         return technicien;
     }
 
-    public abstract int delaiCibleHeures();
+    @Override
+    public boolean estAssigne() {
+        return technicien != null;
+    }
 
-    public void prendreEnCharge(Technicien technicien) {
-        if (etat.equals("ouvert")&& technicien!= null){
-            this.technicien = technicien;
-            this.etat = "pris en charge";
+    // --- Transitions d'etat ---
+
+    public void prendreEnCharge() {
+        if (etat != EtatTicket.OUVERT) {
+            throw new IllegalStateException(
+                    "Impossible de prendre en charge un ticket qui n'est pas OUVERT (etat actuel : " + etat + ").");
         }
-
+        if (!estAssigne()) {
+            throw new IllegalStateException(
+                    "Impossible de prendre en charge un ticket sans technicien assigne.");
+        }
+        this.etat = EtatTicket.EN_COURS;
     }
 
     public void resoudre() {
-        if (etat.equals("en cours")){
-            this.etat = "resolu";
+        if (etat != EtatTicket.EN_COURS) {
+            throw new IllegalStateException(
+                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ").");
         }
-
+        this.etat = EtatTicket.RESOLU;
     }
 
     @Override
     public String toString() {
         return "Ticket " + numero
-                + "|" +titre
-                +"|priorite: " + priorite
+                + "|" + titre
+                + "|priorite: " + priorite
                 + " | auteur : " + auteur.getNom()
                 + " | lieu : " + lieu.getNom()
                 + " | etat : " + etat
-                + " | technicien: " + (technicien==null? "aucun":technicien.getNom())
+                + " | technicien: " + (technicien == null ? "aucun" : technicien.getNom())
                 + " | delai cible : " + delaiCibleHeures() + "h";
     }
 }

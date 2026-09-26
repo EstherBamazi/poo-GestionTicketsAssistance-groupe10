@@ -18,7 +18,8 @@ public class Main {
 
         System.out.println("Evolution du ticket de Sidibe");
         System.out.println(ticketSidibe);
-        ticketSidibe.prendreEnCharge(superBob);
+        ticketSidibe.assigner(superBob);
+        ticketSidibe.prendreEnCharge();
         System.out.println(ticketSidibe);
         ticketSidibe.resoudre();
         System.out.println(ticketSidibe);
@@ -26,14 +27,14 @@ public class Main {
         System.out.println();
         System.out.println("Un ticket ouvert ne peut pas etre resolu directement");
         System.out.println("Etat de t2 avant :" + ticketBernadette.getEtat());
-        ticketBernadette.resoudre();
-        System.out.println("Etat du ticket de Bernadette apres :" + ticketBernadette.getEtat());
-
-        System.out.println();
-        System.out.println("Parcours polymorphe de tous les tickets");
-        Ticket[] tickets = { ticketSidibe, ticketBernadette };
-        for (Ticket t : tickets) {
-            System.out.println(t.getNumero() + " : " + t.delaiCibleHeures() + "h");
+        //jai modifier le djidji a la ligne 30
+        try {
+            ticketBernadette.resoudre();
+            System.out.println("Erreur : la resolution aurait du etre refusee !");
+        } catch (IllegalStateException e) {
+            System.out.println("Resolution refusee comme prevu : " + e.getMessage());
         }
+
+        System.out.println("Etat du ticket de Bernadette apres :" + ticketBernadette.getEtat());
     }
 }
