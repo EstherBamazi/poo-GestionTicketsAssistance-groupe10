@@ -1,5 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
+
+        // --- Création des objets de base ---
+        
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
 
@@ -16,25 +22,59 @@ public class Main {
                 "Le wifi ne fonctionne plus dans le batiment B", "MOYENNE",
                 bernadette, salleB67, "Reparation reseau Wifi");
 
-        System.out.println("Evolution du ticket de Sidibe");
-        System.out.println(ticketSidibe);
+
+        // ==========================================
+        // a) Le polymorphisme
+        // ==========================================
+        
+        System.out.println("=== a.Démonstration du polymorphisme ===");
+        List<Ticket> tickets = new ArrayList<>();
+        tickets.add(ticketSidibe);
+        tickets.add(ticketBernadette);
+
+        for (Ticket t : tickets) {
+            System.out.println(t);
+        }
+        System.out.println();
+
+
+        // ==========================================
+        // b) Un scénario normal
+        // ==========================================
+        
+        System.out.println("=== b. Scénario normal ===");
+        System.out.println("État initial : " + ticketSidibe.getEtat());
+        
         ticketSidibe.assigner(superBob);
         ticketSidibe.prendreEnCharge();
-        System.out.println(ticketSidibe);
+        System.out.println("État après prise en charge : " + ticketSidibe.getEtat());
+        
         ticketSidibe.resoudre();
-        System.out.println(ticketSidibe);
-
+        System.out.println("État après résolution : " + ticketSidibe.getEtat());
         System.out.println();
-        System.out.println("Un ticket ouvert ne peut pas etre resolu directement");
-        System.out.println("Etat de t2 avant :" + ticketBernadette.getEtat());
-        //jai modifier le djidji a la ligne 30
+
+
+        // ==========================================
+        // c) Deux refus
+        // ==========================================
+
+        // Refus 1 : resoudre() sur un ticket jamais pris en charge
+        
+        System.out.println("=== c1. Refus : Résolution sur un ticket non pris en charge ===");
         try {
             ticketBernadette.resoudre();
-            System.out.println("Erreur : la resolution aurait du etre refusee !");
-        } catch (IllegalStateException e) {
-            System.out.println("Resolution refusee comme prevu : " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Message de l'exception : " + e.getMessage());
         }
+        System.out.println();
 
-        System.out.println("Etat du ticket de Bernadette apres :" + ticketBernadette.getEtat());
+        // Refus 2 : prendreEnCharge() sur un ticket déjà résolu
+        
+        System.out.println("=== c2. Refus : Prise en charge sur un ticket déjà résolu ===");
+        try {
+            ticketSidibe.prendreEnCharge();
+        } catch (Exception e) {
+            System.out.println("Message de l'exception : " + e.getMessage());
+        }
     }
 }
