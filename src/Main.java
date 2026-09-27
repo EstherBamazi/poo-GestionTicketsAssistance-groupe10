@@ -67,6 +67,7 @@ public class Main {
         // Refus 2 : prendreEnCharge() sur un ticket déjà résolu
         
         System.out.println("=== c2. Refus : Prise en charge sur un ticket déjà résolu ===");
+
         try {
             ticketSidibe.prendreEnCharge();
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class Main {
         // cas 5 (limite) : prise en charge sans technicien
 
 
-        System.out.println("c 5 : prise en charge refusee sans technicien assigne ===");
+        System.out.println("==c 5 : prise en charge refusee sans technicien assigne ===");
         Ticket ticketSansTechnicien = new TicketIncident(103, "Imprimante bloquee",
                 "L'imprimante affiche une erreur papier", "BASSE",
                 sidibe, salleB65, "Imprimante salle B6.5");
