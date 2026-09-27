@@ -11,7 +11,7 @@ public class TicketIncident extends Ticket {
     }
 
     public String getEquipementConcerne(){
-        return getEquipementConcerne();
+        return equipementConcerne;
     }
 
     @Override

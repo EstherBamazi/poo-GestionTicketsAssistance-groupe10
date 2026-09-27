@@ -34,7 +34,7 @@ public abstract class Personne {
 
     @Override
     public String toString(){
-        return role() + "Cette personne s'appelle " + nom + "et a ete attribue le numero " + numero + "son email est" + email;
+        return role() + " Cette personne s'appelle " + nom + " et a ete attribue le numero " + numero + " son email est " + email;
     }
 
 
