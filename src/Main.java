@@ -1,6 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
     public static void main(String[] args) {
 
@@ -28,9 +25,7 @@ public class Main {
         // ==========================================
         
         System.out.println("=== a.Démonstration du polymorphisme ===");
-        List<Ticket> tickets = new ArrayList<>();
-        tickets.add(ticketSidibe);
-        tickets.add(ticketBernadette);
+        Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
         for (Ticket t : tickets) {
             System.out.println(t);
@@ -63,7 +58,8 @@ public class Main {
         System.out.println("=== c1. Refus : Résolution sur un ticket non pris en charge ===");
         try {
             ticketBernadette.resoudre();
-        } catch (Exception e) {
+            System.out.println("Erreur");
+        } catch (IllegalStateException e) {
             System.out.println("Message de l'exception : " + e.getMessage());
         }
         System.out.println();
@@ -76,5 +72,53 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Message de l'exception : " + e.getMessage());
         }
+
+
+        System.out.println("=== c3 : cas d'un TicketDemandeService ===");
+        Assignable aAffecter = ticketBernadette;
+        aAffecter.assigner(superBob);
+        System.out.println("Technicien assigne : " + aAffecter.estAssigne()
+                + " (" + aAffecter.getTechnicien().getNom() + ")");
+
+        ticketBernadette.prendreEnCharge();
+        System.out.println("Etat apres prise en charge : " + ticketBernadette.getEtat());
+
+        ticketBernadette.resoudre();
+        System.out.println("Etat apres resolution : " + ticketBernadette.getEtat());
+        System.out.println();
+
+
+
+        // Cas : reprise d'un ticket deja resolu
+
+
+        System.out.println("=== c4 : reprise refusee sur un ticket deja resolu ===");
+        try {
+            ticketSidibe.prendreEnCharge();
+            System.out.println("Erreur : la reprise aurait du etre refusee !");
+        } catch (IllegalStateException e) {
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println();
+
+
+
+        // cas 5 (limite) : prise en charge sans technicien
+
+
+        System.out.println("c 5 : prise en charge refusee sans technicien assigne ===");
+        Ticket ticketSansTechnicien = new TicketIncident(103, "Imprimante bloquee",
+                "L'imprimante affiche une erreur papier", "BASSE",
+                sidibe, salleB65, "Imprimante salle B6.5");
+        try {
+            ticketSansTechnicien.prendreEnCharge();
+            System.out.println("Erreur : la prise en charge aurait du etre refusee !");
+        } catch (IllegalStateException e) {
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSansTechnicien.getEtat());
     }
 }
+
+
