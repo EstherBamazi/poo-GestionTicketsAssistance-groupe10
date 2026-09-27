@@ -16,7 +16,7 @@ javac -d out src/*.java
 java -cp out Main
 Structure du dépôt
 src/     classes Java et Main
-docs/    diagramme-classes.md (diagramme de classes)
+docs/    diagramme-classes.png (diagramme de classes)
 
 Le besoin
 
@@ -84,7 +84,7 @@ Toute transition refusée lève une IllegalStateException et laisse l'état inch
 
 Diagramme de classes
 
-Voir docs/diagramme-classes.md. GitHub l'affiche directement sous forme de diagramme.
+Voir docs/diagramme-classes.png. GitHub l'affiche directement sous forme de diagramme.
 
 Choix retenus et choix écarté
 
