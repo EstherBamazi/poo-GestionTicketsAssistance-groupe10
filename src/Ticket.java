@@ -68,11 +68,21 @@ public abstract class Ticket implements Assignable {
 
     @Override
     public void assigner(Technicien technicien) {
+        if (technicien == null) {
+            throw new IllegalArgumentException("Le technicien ne doit pas etre null.");
+        }
         if (this.etat == EtatTicket.RESOLU) {
-            throw new IllegalStateException(
+            throw new TransitionInvalideException(
                     "Impossible d'assigner un technicien a un ticket deja resolu.");
         }
         this.technicien = technicien;
+    }
+    public void resoudre() {
+        if (etat != EtatTicket.EN_COURS) {
+            throw new TransitionInvalideException(
+                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ").");
+        }
+        this.etat = EtatTicket.RESOLU;
     }
 
     @Override
@@ -89,33 +99,15 @@ public abstract class Ticket implements Assignable {
 
     public void prendreEnCharge() {
         if (etat != EtatTicket.OUVERT) {
-            throw new IllegalStateException(
+            throw new TransitionInvalideException(
                     "Impossible de prendre en charge un ticket qui n'est pas OUVERT (etat actuel : " + etat + ").");
         }
+
         if (!estAssigne()) {
-            throw new IllegalStateException(
+            throw new TransitionInvalideException(
                     "Impossible de prendre en charge un ticket sans technicien assigne.");
         }
+
         this.etat = EtatTicket.EN_COURS;
-    }
-
-    public void resoudre() {
-        if (etat != EtatTicket.EN_COURS) {
-            throw new IllegalStateException(
-                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ").");
-        }
-        this.etat = EtatTicket.RESOLU;
-    }
-
-    @Override
-    public String toString() {
-        return "Ticket " + numero
-                + "|" + titre
-                + "|priorite: " + priorite
-                + " | auteur : " + auteur.getNom()
-                + " | lieu : " + lieu.getNom()
-                + " | etat : " + etat
-                + " | technicien: " + (technicien == null ? "aucun" : technicien.getNom())
-                + " | delai cible : " + delaiCibleHeures() + "h";
     }
 }
