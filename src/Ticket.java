@@ -1,3 +1,4 @@
+import java.util.Objects;
 public abstract class Ticket implements Assignable {
     private final int numero;
     private final String titre;
@@ -109,5 +110,18 @@ public abstract class Ticket implements Assignable {
         }
 
         this.etat = EtatTicket.EN_COURS;
+    }
+    // --- Deux tickets avec le meme numero representent le meme ticket ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ticket)) return false;
+        Ticket ticket = (Ticket) o;
+        return numero == ticket.numero;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero);
     }
 }

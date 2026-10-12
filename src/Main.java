@@ -1,8 +1,6 @@
 public class Main {
     public static void main(String[] args) {
 
-        // --- Création des objets de base ---
-
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
 
@@ -20,10 +18,6 @@ public class Main {
                 bernadette, salleB67, "Reparation reseau Wifi");
 
 
-        // ==========================================
-        // a) Le polymorphisme
-        // ==========================================
-
         System.out.println("=== a.Démonstration du polymorphisme ===");
         Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
@@ -33,9 +27,8 @@ public class Main {
         System.out.println();
 
 
-        // ==========================================
         // b) Un scénario normal
-        // ==========================================
+
 
         System.out.println("=== b. Scénario normal ===");
         System.out.println("État initial : " + ticketSidibe.getEtat());
@@ -89,10 +82,65 @@ public class Main {
         System.out.println();
 
 
-
         // Cas : reprise d'un ticket deja resolu
 
 
         System.out.println("=== c4 : reprise refusee sur un ticket deja resolu ===");
+        try {
+            ticketSidibe.prendreEnCharge();
+            System.out.println("Erreur : la reprise aurait du etre refusee !");
+        } catch (TransitionInvalideException e) {
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println();
+
+
+        // cas 5 (limite) : prise en charge sans technicien
+
+
+        System.out.println("==c 5 : prise en charge refusee sans technicien assigne ===");
+        Ticket ticketSansTechnicien = new TicketIncident(103, "Imprimante bloquee",
+                "L'imprimante affiche une erreur papier", "BASSE",
+                sidibe, salleB65, "Imprimante salle B6.5");
+        try {
+            ticketSansTechnicien.prendreEnCharge();
+            System.out.println("Erreur : la prise en charge aurait du etre refusee !");
+        } catch (TransitionInvalideException e) {
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSansTechnicien.getEtat());
+
+        // Refuser null ne doit pas retirer le technicien d'un ticket en cours.
+        ticketSansTechnicien.assigner(superBob);
+        ticketSansTechnicien.prendreEnCharge();
+        boolean nullRefuse = false;
+        try {
+            ticketSansTechnicien.assigner(null);
+        } catch (IllegalArgumentException e) {
+            nullRefuse = true;
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        if (!nullRefuse || ticketSansTechnicien.getTechnicien() != superBob
+                || ticketSansTechnicien.getEtat() != EtatTicket.EN_COURS) {
+            throw new AssertionError("Echec : affectation nulle ou ticket modifie.");
+        }
+        System.out.println("OK : null refuse, technicien et etat conserves.");
+
+        // Une affectation apres resolution doit lever notre exception.
+        ticketSansTechnicien.resoudre();
+        Technicien autreTechnicien = new Technicien(744, "Alice", "alice@tech2IE.bf");
+        boolean affectationRefusee = false;
+        try {
+            ticketSansTechnicien.assigner(autreTechnicien);
+        } catch (TransitionInvalideException e) {
+            affectationRefusee = true;
+            System.out.println("Refus attendu : " + e.getMessage());
+        }
+        if (!affectationRefusee || ticketSansTechnicien.getTechnicien() != superBob
+                || ticketSansTechnicien.getEtat() != EtatTicket.RESOLU) {
+            throw new AssertionError("Echec : affectation acceptee apres resolution.");
+        }
+        System.out.println("OK : affectation refusee, ticket resolu inchange.");
     }
 }

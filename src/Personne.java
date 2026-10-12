@@ -11,7 +11,7 @@ public abstract class Personne {
             throw new IllegalArgumentException("Le nom ne peut pas etre vide");
         }
         if (email==null || email.isBlank()){
-            throw new IllegalArgumentException("l'adresse electronique ne peut pqs etre vide");
+            throw new IllegalArgumentException("l'adresse electronique ne peut pas etre vide");
         }
         this.numero=numero;
         this.nom=nom;
