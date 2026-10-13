@@ -1,5 +1,11 @@
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public class Main {
     public static void main(String[] args) {
+
+        // --- Création des objets de base ---
 
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
@@ -18,6 +24,10 @@ public class Main {
                 bernadette, salleB67, "Reparation reseau Wifi");
 
 
+        // ==========================================
+        // a) Le polymorphisme
+        // ==========================================
+
         System.out.println("=== a.Démonstration du polymorphisme ===");
         Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
@@ -27,8 +37,9 @@ public class Main {
         System.out.println();
 
 
+        // ==========================================
         // b) Un scénario normal
-
+        // ==========================================
 
         System.out.println("=== b. Scénario normal ===");
         System.out.println("État initial : " + ticketSidibe.getEtat());
@@ -67,6 +78,8 @@ public class Main {
             System.out.println("Message de l'exception : " + e.getMessage());
         }
 
+        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println();
 
         System.out.println("=== c3 : cas d'un TicketDemandeService ===");
         Assignable aAffecter = ticketBernadette;
@@ -82,6 +95,7 @@ public class Main {
         System.out.println();
 
 
+
         // Cas : reprise d'un ticket deja resolu
 
 
@@ -94,6 +108,7 @@ public class Main {
         }
         System.out.println("Etat inchange : " + ticketSidibe.getEtat());
         System.out.println();
+
 
 
         // cas 5 (limite) : prise en charge sans technicien
@@ -142,5 +157,163 @@ public class Main {
             throw new AssertionError("Echec : affectation acceptee apres resolution.");
         }
         System.out.println("OK : affectation refusee, ticket resolu inchange.");
+
+        // P6 : les dix essais sont directement dans main.
+        System.out.println("\n=== P6 : essais du registre ===");
+        RegistreTicketsEnMemoire registre = new RegistreTicketsEnMemoire();
+
+        System.out.println("P6.1 - Registre vide");
+        if (registre.taille() != 0 || !registre.lister().isEmpty()) {
+            throw new AssertionError("Le registre doit etre vide.");
+        }
+        System.out.println("OK : taille 0 et liste vide.");
+
+        System.out.println("P6.2 - Ajout du ticket 101");
+        boolean ajout = registre.ajouter(101, ticketSidibe);
+        if (!ajout || registre.taille() != 1) {
+            throw new AssertionError("L'ajout doit reussir et la taille doit valoir 1.");
+        }
+        System.out.println("OK : ajout true, taille 1.");
+
+        System.out.println("P6.3 - Doublon de numero 101");
+        Ticket doublon = new TicketIncident(101, "Autre titre", "Autre description",
+                "BASSE", sidibe, salleB65, "Autre ecran");
+        boolean ajoutDoublon = registre.ajouter(101, doublon);
+        Optional<Ticket> conserve = registre.chercher(101);
+        if (ajoutDoublon || registre.taille() != 1
+                || conserve.isEmpty() || conserve.get() != ticketSidibe) {
+            throw new AssertionError("Le doublon ne doit pas remplacer le ticket initial.");
+        }
+        System.out.println("OK : doublon false, taille 1, meme objet initial conserve.");
+
+        System.out.println("P6.4 - Recherche presente : 101");
+        Optional<Ticket> trouve = registre.chercher(101);
+        if (!trouve.isPresent() || trouve.get() != ticketSidibe || registre.taille() != 1) {
+            throw new AssertionError("Le ticket 101 doit etre retrouve sans modification.");
+        }
+        System.out.println("OK : ticket 101 present.");
+
+        System.out.println("P6.5 - Recherche absente : 999");
+        if (!registre.chercher(999).isEmpty() || registre.taille() != 1
+                || registre.chercher(101).get() != ticketSidibe) {
+            throw new AssertionError("La recherche absente doit laisser le registre inchange.");
+        }
+        System.out.println("OK : Optional vide, registre inchange.");
+
+        System.out.println("P6.6 - Retrait present : 101");
+        boolean retrait = registre.retirer(101);
+        if (!retrait || registre.taille() != 0 || registre.chercher(101).isPresent()) {
+            throw new AssertionError("Le ticket doit etre retire et la taille diminuer.");
+        }
+        System.out.println("OK : retrait true, taille 0.");
+
+        System.out.println("P6.7 - Retrait absent : 999");
+        // Un ticket temoin permet de verifier qu'un retrait absent le preserve.
+        registre.ajouter(101, ticketSidibe);
+        boolean retraitAbsent = registre.retirer(999);
+        if (retraitAbsent || registre.taille() != 1
+                || registre.chercher(101).get() != ticketSidibe) {
+            throw new AssertionError("Le retrait absent doit laisser le registre inchange.");
+        }
+        System.out.println("OK : retrait false, taille 1 et ticket initial conserve.");
+
+        System.out.println("P6.8 - Ajout interdit dans la liste retournee");
+        List<Ticket> copie = registre.lister();
+        boolean listeProtegee = false;
+        try {
+            copie.add(ticketBernadette);
+        } catch (UnsupportedOperationException e) {
+            listeProtegee = true;
+        }
+        if (!listeProtegee || copie.size() != 1 || registre.taille() != 1
+                || registre.chercher(101).get() != ticketSidibe
+                || registre.chercher(102).isPresent()) {
+            throw new AssertionError("La liste doit etre non modifiable et le registre preserve.");
+        }
+        System.out.println("OK : UnsupportedOperationException, taille du registre inchangee.");
+
+        System.out.println("P6.9 - Recherche par titre : PROBLEME");
+        List<Ticket> resultat = registre.rechercherParTitre("PROBLEME");
+        if (resultat.size() != 1 || resultat.get(0) != ticketSidibe
+                || !resultat.equals(registre.rechercherParTitre("probleme"))
+                || registre.taille() != 1) {
+            throw new AssertionError("PROBLEME doit retrouver Probleme d'affichage.");
+        }
+        resultat.clear();
+        if (registre.taille() != 1 || registre.chercher(101).get() != ticketSidibe) {
+            throw new AssertionError("Modifier le resultat ne doit pas toucher au registre.");
+        }
+        System.out.println("OK : Probleme d'affichage retrouve, casse ignoree, registre preserve.");
+
+        System.out.println("P6.10 - Recherche par titre sans resultat");
+        List<Ticket> aucun = registre.rechercherParTitre("introuvable");
+        if (!aucun.isEmpty() || registre.taille() != 1
+                || registre.chercher(101).get() != ticketSidibe) {
+            throw new AssertionError("Le resultat doit etre vide et le registre inchange.");
+        }
+        System.out.println("OK : liste vide, registre inchange.");
+        System.out.println("P6 : 10 essais sur 10 reussis.");
+
+        // P5 : les tickets des scenarios precedents sont resolus.
+        // On ajoute donc un ticket en cours et deux tickets ouverts.
+        Ticket enCours = new TicketIncident(104, "Probleme clavier", "Clavier bloque",
+                "MOYENNE", sidibe, salleB65, "Clavier");
+        enCours.assigner(superBob);
+        enCours.prendreEnCharge();
+        Ticket ouvert = new TicketDemandeService(105, "Installer Java", "Installation demandee",
+                "BASSE", bernadette, salleB67, "Java");
+        Ticket ouvertBis = new TicketIncident(106, "probleme CLAVIER", "Touches bloquees",
+                "BASSE", sidibe, salleB65, "Autre clavier");
+        registre.ajouter(104, enCours);
+        registre.ajouter(105, ouvert);
+        registre.ajouter(106, ouvertBis);
+
+        // Le tri departage les titres sans distinction de casse par le numero.
+        List<Ticket> tries = registre.rechercherParTitre("PROBLEME");
+        if (!tries.equals(List.of(enCours, ouvertBis, ticketSidibe))) {
+            throw new AssertionError("Le tri doit suivre le titre puis le numero.");
+        }
+        System.out.println("OK : tri par titre puis numero.");
+
+        System.out.println("\n=== P5 : regroupement par etat ===");
+        Map<EtatTicket, List<Ticket>> groupes = registre.regrouperParEtat();
+        System.out.println(groupes);
+        if (groupes.size() != 3 || !groupes.get(EtatTicket.EN_COURS).equals(List.of(enCours))
+                || !groupes.get(EtatTicket.RESOLU).equals(List.of(ticketSidibe))
+                || groupes.get(EtatTicket.OUVERT).size() != 2
+                || !groupes.get(EtatTicket.OUVERT).containsAll(List.of(ouvert, ouvertBis))) {
+            throw new AssertionError("Les tickets doivent etre regroupes selon leur etat.");
+        }
+        groupes.get(EtatTicket.OUVERT).clear();
+        groupes.clear();
+        if (registre.taille() != 4
+                || registre.regrouperParEtat().get(EtatTicket.OUVERT).size() != 2) {
+            throw new AssertionError("Modifier les groupes ne doit pas toucher au registre.");
+        }
+        Map<EtatTicket, List<Ticket>> groupesVides =
+                new RegistreTicketsEnMemoire().regrouperParEtat();
+        if (groupesVides.size() != 3
+                || !groupesVides.containsKey(EtatTicket.OUVERT)
+                || !groupesVides.containsKey(EtatTicket.EN_COURS)
+                || !groupesVides.containsKey(EtatTicket.RESOLU)
+                || !groupesVides.get(EtatTicket.OUVERT).isEmpty()
+                || !groupesVides.get(EtatTicket.EN_COURS).isEmpty()
+                || !groupesVides.get(EtatTicket.RESOLU).isEmpty()) {
+            throw new AssertionError("Un registre vide doit donner trois groupes vides.");
+        }
+        System.out.println("OK : registre vide, trois cles et trois listes vides.");
+        System.out.println("OK : trois etats representes et registre protege.");
+
+        int refus = 0;
+        try { registre.ajouter(null, ticketSidibe); } catch (IllegalArgumentException e) { refus++; }
+        try { registre.ajouter(107, null); } catch (IllegalArgumentException e) { refus++; }
+        try { registre.ajouter(107, ticketSidibe); } catch (IllegalArgumentException e) { refus++; }
+        try { registre.rechercherParTitre(null); } catch (IllegalArgumentException e) { refus++; }
+        if (refus != 4 || registre.taille() != 4 || registre.chercher(107).isPresent()) {
+            throw new AssertionError("Les arguments invalides doivent etre refuses sans modification.");
+        }
+        System.out.println("OK : null et cle incoherente refuses sans modification.");
+
+        ComparaisonRecherche.executer(sidibe, salleB65);
     }
 }

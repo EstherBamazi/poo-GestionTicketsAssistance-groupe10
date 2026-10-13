@@ -124,4 +124,16 @@ public abstract class Ticket implements Assignable {
     public int hashCode() {
         return Objects.hash(numero);
     }
+
+    @Override
+    public String toString() {
+        return "Ticket " + numero
+                + "|" + titre
+                + "|priorite: " + priorite
+                + " | auteur : " + auteur.getNom()
+                + " | lieu : " + lieu.getNom()
+                + " | etat : " + etat
+                + " | technicien: " + (technicien == null ? "aucun" : technicien.getNom())
+                + " | delai cible : " + delaiCibleHeures() + "h";
+    }
 }
