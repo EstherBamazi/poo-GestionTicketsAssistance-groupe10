@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
-    // private protege le stockage ; final empeche de remplacer la Map, pas de modifier son contenu.
+
     private final Map<Integer, Ticket> tickets = new HashMap<>();
 
     @Override
     public boolean ajouter(Integer cle, Ticket element) {
-        // Null ne represente ni une identite ni un ticket valide : refus avant toute modification.
+
         if (cle == null || element == null) {
             throw new IllegalArgumentException("La cle et le ticket sont obligatoires.");
         }
-        // La cle doit etre le numero du ticket pour garantir une seule identite coherente.
+
         if (cle != element.getNumero()) {
             throw new IllegalArgumentException("La cle doit correspondre au numero du ticket.");
         }
@@ -75,8 +75,7 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
         return resultat;
     }
 
-    // Renvoie une nouvelle Map et de nouvelles listes, avec un groupe pour chacun des trois etats.
-    // Les tickets restent partages ; le regroupement correspond aux etats au moment de l'appel.
+
     public Map<EtatTicket, List<Ticket>> regrouperParEtat() {
         Map<EtatTicket, List<Ticket>> groupes = new HashMap<>();
         for (EtatTicket etat : EtatTicket.values()) {
