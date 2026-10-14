@@ -111,7 +111,7 @@ public class Main {
 
 
 
-        // cas 5 (limite) : prise en charge sans technicien
+        // Cas (limite) : prise en charge sans technicien
 
 
         System.out.println("==c 5 : prise en charge refusee sans technicien assigne ===");
@@ -255,7 +255,7 @@ public class Main {
         System.out.println("P6 : 10 essais sur 10 reussis.");
 
         // P5 : les tickets des scenarios precedents sont resolus.
-        // On ajoute donc un ticket en cours et deux tickets ouverts.
+
         Ticket enCours = new TicketIncident(104, "Probleme clavier", "Clavier bloque",
                 "MOYENNE", sidibe, salleB65, "Clavier");
         enCours.assigner(superBob);
@@ -268,7 +268,7 @@ public class Main {
         registre.ajouter(105, ouvert);
         registre.ajouter(106, ouvertBis);
 
-        // Le tri departage les titres sans distinction de casse par le numero.
+
         List<Ticket> tries = registre.rechercherParTitre("PROBLEME");
         if (!tries.equals(List.of(enCours, ouvertBis, ticketSidibe))) {
             throw new AssertionError("Le tri doit suivre le titre puis le numero.");
