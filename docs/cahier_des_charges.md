@@ -1,15 +1,15 @@
-# Cahier des Charges — Système de Tickets d’Assistance
+# Cahier des Charges: Système de Tickets d’Assistance GLPI
 
-**Gestion de tickets d’assistance** • *Sujet C — Groupe 10*  
+**Gestion de tickets d’assistance** • *Sujet C  Groupe 10*  
 **Auteurs :** BAMAZI Yesuwaba Esther, LOUE Rayan, KABORE Cedric
 
 ---
 
 ## 1. Contexte et Objectifs
 
-Notre projet vise à faciliter le suivi des demandes d’assistance dans un établissement universitaire. Le système doit centraliser les incidents et les demandes de service, identifier leur auteur et leur lieu, puis suivre leur traitement jusqu’à la résolution.
+Notre projet vise à faciliter le suivi des demandes d’assistance dans un établissement universitaire comme 2IE. Le système doit centraliser les incidents et les demandes de service, identifier leur auteur et leur lieu, puis suivre leur traitement jusqu’à la résolution.
 
-Un étudiant qui rencontre un problème doit pouvoir le signaler en précisant sa nature et son lieu. Le service d’assistance doit disposer des informations nécessaires pour affecter un technicien, suivre le traitement et connaître les demandes résolues. Le système s’inspire du fonctionnement d’un outil de gestion d’assistance comme **GLPI**.
+Un étudiant qui rencontre un problème doit pouvoir le signaler depuis son ordinateur en précisant sa nature et son lieu. Le service d’assistance doit disposer des informations nécessaires pour affecter un technicien, suivre le traitement et connaître les demandes résolues. Le système s’inspire du fonctionnement d’un outil de gestion d’assistance comme **GLPI**.
 
 > **Exemple :** Sidibé rencontre un problème d’affichage en salle B6.5. Un ticket décrit la panne et l’écran concerné. Bob est affecté au ticket, le prend en charge et le marque comme résolu lorsque son intervention est terminée.
 
