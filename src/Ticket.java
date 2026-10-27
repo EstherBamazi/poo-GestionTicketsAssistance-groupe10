@@ -51,6 +51,16 @@ public abstract class Ticket implements Assignable {
         return priorite;
     }
 
+    public void changerPriorite(Priorite p){
+        if (p==null){
+            throw new IllegalArgumentException("Une priorite doit etre renseignee");
+        }
+        else if ( this.getEtat()==EtatTicket.RESOLU){
+            throw new TransitionInvalideException("Ce ticket est deja resolu");
+        }
+        this.priorite=p;
+    }
+
     public EtatTicket getEtat() {
         return etat;
     }

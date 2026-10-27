@@ -23,6 +23,30 @@ public class Main {
                 "Le wifi ne fonctionne plus dans le batiment B", Priorite.MOYENNE,
                 bernadette, salleB67, "Reparation reseau Wifi");
 
+        // ==========================================
+        // Test pour le setter de la priorite
+        // ==========================================
+        System.out.println("=== Tests pour le setter de la priorite ===");
+        try {
+            ticketSidibe.changerPriorite(null);
+        } catch (IllegalArgumentException e) {
+            System.out.println(" une priorite differente de null est attendue" + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println();
+
+        ticketSidibe.resoudre();
+        System.out.println(ticketSidibe.getEtat());
+
+        try {
+            ticketSidibe.changerPriorite(Priorite.BASSE);
+        } catch (TransitionInvalideException e) {
+            System.out.println(" une priorite ne peut pas etre changee sur un ticket resolu" + e.getMessage());
+        }
+        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println();
+
+
 
         // ==========================================
         // a) Le polymorphisme
