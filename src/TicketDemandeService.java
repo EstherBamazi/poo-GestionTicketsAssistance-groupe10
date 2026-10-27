@@ -1,7 +1,7 @@
 public class TicketDemandeService extends Ticket {
     private final String serviceDemande;
 
-    public TicketDemandeService(int numero, String titre, String description, String priorite,
+    public TicketDemandeService(int numero, String titre, String description, Priorite priorite,
                                 Utilisateur auteur, Lieu lieu, String serviceDemande) {
         super(numero, titre, description, priorite, auteur, lieu);
         if (serviceDemande == null || serviceDemande.trim().isEmpty()){

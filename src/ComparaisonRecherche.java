@@ -16,7 +16,7 @@ public class ComparaisonRecherche {
                     numero,
                     "Ticket " + numero,
                     "Incident de demonstration",
-                    "BASSE",
+                    Priorite.BASSE,
                     auteur,
                     lieu,
                     "Ordinateur"

@@ -1,7 +1,7 @@
 public class TicketIncident extends Ticket {
     private final String equipementConcerne;
 
-    public TicketIncident(int numero, String titre, String description, String priorite,
+    public TicketIncident(int numero, String titre, String description, Priorite priorite,
                           Utilisateur auteur, Lieu lieu, String equipementConcerne) {
         super(numero, titre, description, priorite, auteur, lieu);
         if (equipementConcerne==null || equipementConcerne.isBlank()){

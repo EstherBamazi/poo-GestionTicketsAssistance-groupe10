@@ -3,13 +3,13 @@ public abstract class Ticket implements Assignable {
     private final int numero;
     private final String titre;
     private final String description;
-    private final String priorite;
+    private Priorite priorite;
     private final Utilisateur auteur;
     private final Lieu lieu;
     private EtatTicket etat;
     private Technicien technicien;
 
-    public Ticket(int numero, String titre, String description, String priorite, Utilisateur auteur, Lieu lieu) {
+    public Ticket(int numero, String titre, String description, Priorite priorite, Utilisateur auteur, Lieu lieu) {
         if (numero <= 0) {
             throw new IllegalArgumentException("Le numero doit etre positif");
         }
@@ -19,7 +19,7 @@ public abstract class Ticket implements Assignable {
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("La description ne doit pas etre vide");
         }
-        if (priorite == null || priorite.isBlank()) {
+        if (priorite == null ) {
             throw new IllegalArgumentException("La priorite ne doit pas etre vide");
         }
         if (auteur == null || lieu == null) {
@@ -47,7 +47,7 @@ public abstract class Ticket implements Assignable {
         return titre;
     }
 
-    public String getPriorite() {
+    public Priorite getPriorite() {
         return priorite;
     }
 

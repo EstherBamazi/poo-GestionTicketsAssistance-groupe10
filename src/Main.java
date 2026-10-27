@@ -16,11 +16,11 @@ public class Main {
         Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
 
         Ticket ticketSidibe = new TicketIncident(101, "Probleme d'affichage",
-                "L'affichage de l'ecran est pixelise", "HAUTE",
+                "L'affichage de l'ecran est pixelise", Priorite.HAUTE,
                 sidibe, salleB65, "Ecran salle B6.5");
 
         Ticket ticketBernadette = new TicketDemandeService(102, "Plus d'internet",
-                "Le wifi ne fonctionne plus dans le batiment B", "MOYENNE",
+                "Le wifi ne fonctionne plus dans le batiment B", Priorite.MOYENNE,
                 bernadette, salleB67, "Reparation reseau Wifi");
 
 
@@ -116,7 +116,7 @@ public class Main {
 
         System.out.println("==c 5 : prise en charge refusee sans technicien assigne ===");
         Ticket ticketSansTechnicien = new TicketIncident(103, "Imprimante bloquee",
-                "L'imprimante affiche une erreur papier", "BASSE",
+                "L'imprimante affiche une erreur papier", Priorite.BASSE,
                 sidibe, salleB65, "Imprimante salle B6.5");
         try {
             ticketSansTechnicien.prendreEnCharge();
@@ -177,7 +177,7 @@ public class Main {
 
         System.out.println("P6.3 - Doublon de numero 101");
         Ticket doublon = new TicketIncident(101, "Autre titre", "Autre description",
-                "BASSE", sidibe, salleB65, "Autre ecran");
+                Priorite.BASSE, sidibe, salleB65, "Autre ecran");
         boolean ajoutDoublon = registre.ajouter(101, doublon);
         Optional<Ticket> conserve = registre.chercher(101);
         if (ajoutDoublon || registre.taille() != 1
@@ -257,13 +257,13 @@ public class Main {
         // P5 : les tickets des scenarios precedents sont resolus.
 
         Ticket enCours = new TicketIncident(104, "Probleme clavier", "Clavier bloque",
-                "MOYENNE", sidibe, salleB65, "Clavier");
+                Priorite.MOYENNE, sidibe, salleB65, "Clavier");
         enCours.assigner(superBob);
         enCours.prendreEnCharge();
         Ticket ouvert = new TicketDemandeService(105, "Installer Java", "Installation demandee",
-                "BASSE", bernadette, salleB67, "Java");
+                Priorite.BASSE, bernadette, salleB67, "Java");
         Ticket ouvertBis = new TicketIncident(106, "probleme CLAVIER", "Touches bloquees",
-                "BASSE", sidibe, salleB65, "Autre clavier");
+                Priorite.BASSE, sidibe, salleB65, "Autre clavier");
         registre.ajouter(104, enCours);
         registre.ajouter(105, ouvert);
         registre.ajouter(106, ouvertBis);
