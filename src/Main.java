@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
+        testerInvariants();
 
         // --- Création des objets de base ---
 
@@ -340,4 +341,87 @@ public class Main {
 
         ComparaisonRecherche.executer(sidibe, salleB65);
     }
-}
+     // ==================================================
+// TESTS DU JALON 1 : MODELES ET INVARIANTS
+// ==================================================
+
+        public static void testerInvariants() {
+
+            System.out.println("\n===== TESTS DU JALON 1 =====");
+
+            Utilisateur Mariam =
+                    new Utilisateur(900, "Mariam", "mariam@2IE.bf");
+
+            Lieu salleC2 =
+                    new Lieu(900, "salleC2", "Batiment Principal");
+
+            // Test 1 : numéro du ticket <= 0
+            verifierRejet("Numero du ticket <= 0", () ->
+                    new TicketIncident(
+                            0, "Probme de climatisation", "la clim ne fonctionne pas",
+                            "HAUTE", Mariam, salleC2, "la clim"
+                    )
+            );
+
+            // Test 2 : titre vide
+            verifierRejet("Titre vide", () ->
+                    new TicketIncident(
+                            901, "   ", "la clim ne fonctionne pas",
+                            "HAUTE", Mariam, salleC2, "la clim"
+                    )
+            );
+
+            // Test 3 : priorité null
+            verifierRejet("Priorite null", () ->
+                    new TicketIncident(
+                            902, "Probleme de climatisation", "la clim ne fonctionne pas",
+                            null, Mariam, salleC2, "la clim"
+                    )
+            );
+
+            // Test 4 : auteur null
+            verifierRejet("Auteur null", () ->
+                    new TicketIncident(
+                            903, "Probleme", "Description valide",
+                            "HAUTE", null, salleC2, "Ecran"
+                    )
+            );
+
+
+            // Test 5 : email vide
+            verifierRejet("Email vide", () ->
+                    new Utilisateur(
+                            905, "Mariam", "   "
+                    )
+            );
+
+            // Test 6 : numéro du lieu <= 0
+            verifierRejet("Numero du lieu <= 0", () ->
+                    new Lieu(
+                            0, "SalleC2", "Batiment Principal"
+                    )
+            );
+
+            System.out.println("===== FIN DES TESTS =====\n");
+        }
+
+
+        // Méthode qui vérifie qu'une donnée invalide est refusée
+        private static void verifierRejet(String nomTest, Runnable operation) {
+
+            try {
+                operation.run();
+
+                System.out.println("ECHEC : " + nomTest
+                        + " - aucune exception n'a ete levee.");
+
+            } catch (IllegalArgumentException e) {
+                System.out.println("REUSSI : " + nomTest);
+
+            } catch (Exception e) {
+                System.out.println("ECHEC : " + nomTest
+                        + " - exception inattendue : "
+                        + e.getClass().getSimpleName());
+            }
+        }
+    }
