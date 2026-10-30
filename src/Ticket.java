@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.List;
+
 public abstract class Ticket implements Assignable {
     private final int numero;
     private final String titre;
@@ -8,6 +11,7 @@ public abstract class Ticket implements Assignable {
     private final Lieu lieu;
     private EtatTicket etat;
     private Technicien technicien;
+    private final List<Evenement> historique = new ArrayList<>();
 
     public Ticket(int numero, String titre, String description, Priorite priorite, Utilisateur auteur, Lieu lieu) {
         if (numero <= 0) {
@@ -51,16 +55,28 @@ public abstract class Ticket implements Assignable {
         return priorite;
     }
 
-    public void changerPriorite(Priorite p){
-        if (p==null){
-            throw new IllegalArgumentException("Une priorite doit etre renseignee");
+    public void changerPriorite(Priorite p) {
+        if (p == null) {
+            throw new IllegalArgumentException(
+                    "La priorité doit être renseignée"
+            );
         }
-        else if ( this.getEtat()==EtatTicket.RESOLU){
-            throw new TransitionInvalideException("Ce ticket est deja resolu");
-        }
-        this.priorite=p;
-    }
 
+        if (this.etat == EtatTicket.RESOLU) {
+            throw new TransitionInvalideException(
+                    "La priorité d'un ticket résolu ne peut pas être modifiée"
+            );
+        }
+
+        this.priorite = p;
+
+        historique.add(
+                new Evenement(
+                        "Priorité changée en " + p,
+                        this.etat
+                )
+        );
+    }
     public EtatTicket getEtat() {
         return etat;
     }
@@ -74,6 +90,10 @@ public abstract class Ticket implements Assignable {
     }
 
     public abstract int delaiCibleHeures();
+
+    public List<Evenement> getHistorique() {
+        return List.copyOf(historique);
+    }
 
     // --- Assignable ---
 

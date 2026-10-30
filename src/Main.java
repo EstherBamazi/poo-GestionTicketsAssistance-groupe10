@@ -9,11 +9,15 @@ public class Main {
 
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
+        Lieu chambre14 = new Lieu(14, "chambre14(dortoir)", "Residance Campus Filles");
+
 
         Utilisateur sidibe = new Utilisateur(56, "Sidibe", "sidibe@2IE.bf");
         Utilisateur bernadette = new Utilisateur(75, "Bernadette", "bernadette@2IE.bf");
+        Utilisateur test = new Utilisateur(01, "test", "test@2IE.bf");
 
         Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
+        Technicien Marianne = new Technicien(747, "Mari-Anne ", "marie.anne@tech2IE.bf");
 
         Ticket ticketSidibe = new TicketIncident(101, "Probleme d'affichage",
                 "L'affichage de l'ecran est pixelise", Priorite.HAUTE,
@@ -24,28 +28,75 @@ public class Main {
                 bernadette, salleB67, "Reparation reseau Wifi");
 
         // ==========================================
-        // Test pour le setter de la priorite
+        // Tests pour changer Priorite
         // ==========================================
-        System.out.println("=== Tests pour le setter de la priorite ===");
+        System.out.println("=== Tests pour changerPriorite ===");
+
+        // Creation d'un ticket de test
+        Ticket ticketTest = new TicketIncident(101, "Probleme de plomberie",
+                "Les toilettes sont bouchees!!", Priorite.HAUTE,
+                test, chambre14, "WC chambre 14");
+        ticketTest.assigner(Marianne);
+        ticketTest.prendreEnCharge();
+
+        System.out.println("Test sur le ticket " + ticketTest.toString());
+
+        Priorite prioriteAvant = ticketTest.getPriorite();
+
+        // 1. Refus d'une priorité nulle
         try {
-            ticketSidibe.changerPriorite(null);
+            ticketTest.changerPriorite(null);
+
         } catch (IllegalArgumentException e) {
-            System.out.println(" une priorite differente de null est attendue" + e.getMessage());
+            System.out.println("OK : priorité nulle refusée -> " + e.getMessage());
         }
-        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        System.out.println(
+                "Priorité inchangée : " + ticketTest.getPriorite()
+        );
         System.out.println();
 
-        ticketSidibe.resoudre();
-        System.out.println(ticketSidibe.getEtat());
+
+        // 2. Changement valide
+        ticketTest.changerPriorite(Priorite.BASSE);
+
+        if (ticketTest  .getPriorite() != Priorite.BASSE) {
+            throw new AssertionError(
+                    "La priorité aurait dû devenir BASSE"
+            );
+        }
+
+        System.out.println(
+                "OK : priorité modifiée -> " + ticketTest.getPriorite()
+        );
+        System.out.println();
+
+
+        // 3. Refus sur ticket résolu
+        ticketTest.resoudre();
+
+        Priorite prioriteAvantRefus = ticketTest.getPriorite();
 
         try {
-            ticketSidibe.changerPriorite(Priorite.BASSE);
+            ticketTest.changerPriorite(Priorite.HAUTE);
+            throw new AssertionError(
+                    "Une TransitionInvalideException était attendue"
+            );
         } catch (TransitionInvalideException e) {
-            System.out.println(" une priorite ne peut pas etre changee sur un ticket resolu" + e.getMessage());
+            System.out.println(
+                    "OK : changement refusé sur ticket résolu -> "
+                            + e.getMessage()
+            );
         }
-        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
-        System.out.println();
 
+        if (ticketTest.getPriorite() != prioriteAvantRefus) {
+            throw new AssertionError(
+                    "La priorité a changé malgré le refus"
+            );
+        }
+
+        System.out.println(
+                "Priorité inchangée : " + ticketSidibe.getPriorite()
+        );
 
 
         // ==========================================

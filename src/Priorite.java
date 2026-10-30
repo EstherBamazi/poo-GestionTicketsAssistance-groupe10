@@ -1,6 +1,5 @@
 public enum Priorite {
-    HAUTE,
-    NORMALE,
+    BASSE,
     MOYENNE,
-    BASSE;
+    HAUTE
 }
