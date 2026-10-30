@@ -67,7 +67,6 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
         }
 
         // Tri par titre, puis par numero si les titres sont identiques.
-        // Le tri est ecrit avec des boucles afin de rester proche des notions vues en cours.
         for (int i = 0; i < resultat.size() - 1; i++) {
             for (int j = i + 1; j < resultat.size(); j++) {
                 Ticket premier = resultat.get(i);
