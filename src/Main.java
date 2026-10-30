@@ -410,7 +410,7 @@ public class Main {
             verifierRejet("Numero du ticket <= 0", () ->
                     new TicketIncident(
                             0, "Probme de climatisation", "la clim ne fonctionne pas",
-                            "HAUTE", Mariam, salleC2, "la clim"
+                            Priorite.HAUTE, Mariam, salleC2, "la clim"
                     )
             );
 
@@ -418,7 +418,7 @@ public class Main {
             verifierRejet("Titre vide", () ->
                     new TicketIncident(
                             901, "   ", "la clim ne fonctionne pas",
-                            "HAUTE", Mariam, salleC2, "la clim"
+                            Priorite.HAUTE, Mariam, salleC2, "la clim"
                     )
             );
 
@@ -434,7 +434,7 @@ public class Main {
             verifierRejet("Auteur null", () ->
                     new TicketIncident(
                             903, "Probleme", "Description valide",
-                            "HAUTE", null, salleC2, "Ecran"
+                            Priorite.HAUTE, null, salleC2, "Ecran"
                     )
             );
 
