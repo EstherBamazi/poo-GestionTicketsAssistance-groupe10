@@ -6,10 +6,8 @@ import java.util.Map;
 public class ComparaisonRecherche {
 
     public static void executer(Utilisateur auteur, Lieu lieu) {
-
         List<Ticket> liste = new ArrayList<>();
         Map<Integer, Ticket> map = new HashMap<>();
-
 
         for (int numero = 1; numero <= 10000; numero++) {
             Ticket ticket = new TicketIncident(
@@ -26,13 +24,10 @@ public class ComparaisonRecherche {
             map.put(numero, ticket);
         }
 
-
         int trouvesListe = 0;
         long debutListe = System.nanoTime();
 
         for (int numero = 10; numero <= 10000; numero += 10) {
-
-
             for (Ticket ticket : liste) {
                 if (ticket.getNumero() == numero) {
                     trouvesListe++;
@@ -43,13 +38,11 @@ public class ComparaisonRecherche {
 
         long dureeListe = System.nanoTime() - debutListe;
 
-
         int trouvesMap = 0;
         long debutMap = System.nanoTime();
 
         for (int numero = 10; numero <= 10000; numero += 10) {
             Ticket ticket = map.get(numero);
-
             if (ticket != null) {
                 trouvesMap++;
             }
@@ -57,13 +50,12 @@ public class ComparaisonRecherche {
 
         long dureeMap = System.nanoTime() - debutMap;
 
-        // 5. Verifier que les deux recherches ont fonctionne.
-        if (trouvesListe != 1000 || trouvesMap != 1000) {
-            throw new AssertionError(
-                    "Chaque structure doit retrouver 1000 tickets."
-            );
+        if (trouvesListe == 1000 && trouvesMap == 1000) {
+            System.out.println("REUSSI : les deux structures ont retrouve 1000 tickets.");
+        } else {
+            System.out.println("ECHEC : les deux structures devaient retrouver 1000 tickets.");
+            return;
         }
-
 
         double tempsListe = dureeListe / 1_000_000.0;
         double tempsMap = dureeMap / 1_000_000.0;
@@ -73,8 +65,6 @@ public class ComparaisonRecherche {
         System.out.println("Tickets retrouves dans la Map : " + trouvesMap);
         System.out.println("Temps liste : " + tempsListe + " ms");
         System.out.println("Temps Map : " + tempsMap + " ms");
-        System.out.println(
-                "Mesures indicatives : les temps varient entre les executions."
-        );
+        System.out.println("Mesures indicatives : les temps varient entre les executions.");
     }
 }

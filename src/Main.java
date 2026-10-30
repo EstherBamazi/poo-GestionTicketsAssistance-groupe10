@@ -3,22 +3,21 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Main {
+
     public static void main(String[] args) {
         testerInvariants();
 
-        // --- Création des objets de base ---
-
+        // --- Creation des objets de base ---
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
         Lieu chambre14 = new Lieu(14, "chambre14(dortoir)", "Residance Campus Filles");
 
-
         Utilisateur sidibe = new Utilisateur(56, "Sidibe", "sidibe@2IE.bf");
         Utilisateur bernadette = new Utilisateur(75, "Bernadette", "bernadette@2IE.bf");
-        Utilisateur test = new Utilisateur(01, "test", "test@2IE.bf");
+        Utilisateur test = new Utilisateur(1, "test", "test@2IE.bf");
 
         Technicien superBob = new Technicien(743, "Bob le depanneur", "bob@tech2IE.bf");
-        Technicien Marianne = new Technicien(747, "Mari-Anne ", "marie.anne@tech2IE.bf");
+        Technicien marianne = new Technicien(747, "Mari-Anne", "marie.anne@tech2IE.bf");
 
         Ticket ticketSidibe = new TicketIncident(101, "Probleme d'affichage",
                 "L'affichage de l'ecran est pixelise", Priorite.HAUTE,
@@ -29,182 +28,170 @@ public class Main {
                 bernadette, salleB67, "Reparation reseau Wifi");
 
         // ==========================================
-        // Tests pour changer Priorite
+        // Tests pour changerPriorite
         // ==========================================
         System.out.println("=== Tests pour changerPriorite ===");
 
-        // Creation d'un ticket de test
-        Ticket ticketTest = new TicketIncident(101, "Probleme de plomberie",
-                "Les toilettes sont bouchees!!", Priorite.HAUTE,
+        Ticket ticketTest = new TicketIncident(107, "Probleme de plomberie",
+                "Les toilettes sont bouchees", Priorite.HAUTE,
                 test, chambre14, "WC chambre 14");
-        ticketTest.assigner(Marianne);
+        ticketTest.assigner(marianne);
         ticketTest.prendreEnCharge();
 
-        System.out.println("Test sur le ticket " + ticketTest.toString());
-
         Priorite prioriteAvant = ticketTest.getPriorite();
+        boolean prioriteNulleRefusee = false;
 
-        // 1. Refus d'une priorité nulle
         try {
             ticketTest.changerPriorite(null);
-
         } catch (IllegalArgumentException e) {
-            System.out.println("OK : priorité nulle refusée -> " + e.getMessage());
+            prioriteNulleRefusee = true;
+            System.out.println("Refus attendu : " + e.getMessage());
         }
-        System.out.println(
-                "Priorité inchangée : " + ticketTest.getPriorite()
+
+        verifierCondition(
+                "priorite null refusee et priorite inchangee",
+                prioriteNulleRefusee && ticketTest.getPriorite() == prioriteAvant
         );
-        System.out.println();
 
-
-        // 2. Changement valide
         ticketTest.changerPriorite(Priorite.BASSE);
-
-        if (ticketTest  .getPriorite() != Priorite.BASSE) {
-            throw new AssertionError(
-                    "La priorité aurait dû devenir BASSE"
-            );
-        }
-
-        System.out.println(
-                "OK : priorité modifiée -> " + ticketTest.getPriorite()
+        verifierCondition(
+                "changement valide de priorite vers BASSE",
+                ticketTest.getPriorite() == Priorite.BASSE
         );
-        System.out.println();
 
-
-        // 3. Refus sur ticket résolu
         ticketTest.resoudre();
-
         Priorite prioriteAvantRefus = ticketTest.getPriorite();
+        int tailleHistoriqueAvantRefus = ticketTest.getHistorique().size();
+        boolean changementRefuse = false;
 
         try {
             ticketTest.changerPriorite(Priorite.HAUTE);
-            throw new AssertionError(
-                    "Une TransitionInvalideException était attendue"
-            );
         } catch (TransitionInvalideException e) {
-            System.out.println(
-                    "OK : changement refusé sur ticket résolu -> "
-                            + e.getMessage()
-            );
+            changementRefuse = true;
+            System.out.println("Refus attendu : " + e.getMessage());
         }
 
-        if (ticketTest.getPriorite() != prioriteAvantRefus) {
-            throw new AssertionError(
-                    "La priorité a changé malgré le refus"
-            );
-        }
-
-        System.out.println(
-                "Priorité inchangée : " + ticketSidibe.getPriorite()
+        verifierCondition(
+                "priorite d'un ticket resolu inchangee",
+                changementRefuse
+                        && ticketTest.getPriorite() == prioriteAvantRefus
+                        && ticketTest.getHistorique().size() == tailleHistoriqueAvantRefus
         );
-
+        System.out.println();
 
         // ==========================================
-        // a) Le polymorphisme
+        // a) Polymorphisme
         // ==========================================
-
-        System.out.println("=== a.Démonstration du polymorphisme ===");
+        System.out.println("=== a. Demonstration du polymorphisme ===");
         Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
-        for (Ticket t : tickets) {
-            System.out.println(t);
+        for (Ticket ticket : tickets) {
+            System.out.println(ticket);
         }
         System.out.println();
 
-
         // ==========================================
-        // b) Un scénario normal
+        // b) Scenario normal
         // ==========================================
-
-        System.out.println("=== b. Scénario normal ===");
-        System.out.println("État initial : " + ticketSidibe.getEtat());
+        System.out.println("=== b. Scenario normal ===");
+        System.out.println("Etat initial : " + ticketSidibe.getEtat());
 
         ticketSidibe.assigner(superBob);
         ticketSidibe.prendreEnCharge();
-        System.out.println("État après prise en charge : " + ticketSidibe.getEtat());
+        System.out.println("Etat apres prise en charge : " + ticketSidibe.getEtat());
 
         ticketSidibe.resoudre();
-        System.out.println("État après résolution : " + ticketSidibe.getEtat());
+        System.out.println("Etat apres resolution : " + ticketSidibe.getEtat());
+
+        verifierCondition(
+                "cycle OUVERT -> EN_COURS -> RESOLU",
+                ticketSidibe.getEtat() == EtatTicket.RESOLU
+        );
+
+        System.out.println("Historique du ticket 101 :");
+        for (Evenement evenement : ticketSidibe.getHistorique()) {
+            System.out.println("- " + evenement);
+        }
+        verifierCondition(
+                "historique de creation, affectation, prise en charge et resolution",
+                ticketSidibe.getHistorique().size() == 4
+        );
         System.out.println();
 
-
         // ==========================================
-        // c) Deux refus
+        // c) Cas de refus et limites
         // ==========================================
+        System.out.println("=== c1. Resolution sur un ticket non pris en charge ===");
+        EtatTicket etatAvantRefus = ticketBernadette.getEtat();
+        boolean resolutionRefusee = false;
 
-        // Refus 1 : resoudre() sur un ticket jamais pris en charge
-
-        System.out.println("=== c1. Refus : Résolution sur un ticket non pris en charge ===");
         try {
             ticketBernadette.resoudre();
-            System.out.println("Erreur");
         } catch (TransitionInvalideException e) {
-            System.out.println("Message de l'exception : " + e.getMessage());
+            resolutionRefusee = true;
+            System.out.println("Refus attendu : " + e.getMessage());
         }
+
+        verifierCondition(
+                "resolution refusee et etat inchange",
+                resolutionRefusee && ticketBernadette.getEtat() == etatAvantRefus
+        );
         System.out.println();
 
-        // Refus 2 : prendreEnCharge() sur un ticket déjà résolu
-
-        System.out.println("=== c2. Refus : Prise en charge sur un ticket déjà résolu ===");
+        System.out.println("=== c2. Prise en charge sur un ticket deja resolu ===");
+        int historiqueAvantReprise = ticketSidibe.getHistorique().size();
+        boolean repriseRefusee = false;
 
         try {
             ticketSidibe.prendreEnCharge();
         } catch (TransitionInvalideException e) {
-            System.out.println("Message de l'exception : " + e.getMessage());
+            repriseRefusee = true;
+            System.out.println("Refus attendu : " + e.getMessage());
         }
 
-        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
+        verifierCondition(
+                "reprise refusee sans modification de l'etat ni de l'historique",
+                repriseRefusee
+                        && ticketSidibe.getEtat() == EtatTicket.RESOLU
+                        && ticketSidibe.getHistorique().size() == historiqueAvantReprise
+        );
         System.out.println();
 
-        System.out.println("=== c3 : cas d'un TicketDemandeService ===");
+        System.out.println("=== c3. Cas d'un TicketDemandeService ===");
         Assignable aAffecter = ticketBernadette;
         aAffecter.assigner(superBob);
         System.out.println("Technicien assigne : " + aAffecter.estAssigne()
                 + " (" + aAffecter.getTechnicien().getNom() + ")");
 
         ticketBernadette.prendreEnCharge();
-        System.out.println("Etat apres prise en charge : " + ticketBernadette.getEtat());
-
         ticketBernadette.resoudre();
-        System.out.println("Etat apres resolution : " + ticketBernadette.getEtat());
+        verifierCondition(
+                "TicketDemandeService resolu",
+                ticketBernadette.getEtat() == EtatTicket.RESOLU
+        );
         System.out.println();
 
-
-
-        // Cas : reprise d'un ticket deja resolu
-
-
-        System.out.println("=== c4 : reprise refusee sur un ticket deja resolu ===");
-        try {
-            ticketSidibe.prendreEnCharge();
-            System.out.println("Erreur : la reprise aurait du etre refusee !");
-        } catch (TransitionInvalideException e) {
-            System.out.println("Refus attendu : " + e.getMessage());
-        }
-        System.out.println("Etat inchange : " + ticketSidibe.getEtat());
-        System.out.println();
-
-
-
-        // Cas (limite) : prise en charge sans technicien
-
-
-        System.out.println("==c 5 : prise en charge refusee sans technicien assigne ===");
+        System.out.println("=== c4. Prise en charge sans technicien ===");
         Ticket ticketSansTechnicien = new TicketIncident(103, "Imprimante bloquee",
                 "L'imprimante affiche une erreur papier", Priorite.BASSE,
                 sidibe, salleB65, "Imprimante salle B6.5");
+
+        boolean sansTechnicienRefuse = false;
         try {
             ticketSansTechnicien.prendreEnCharge();
-            System.out.println("Erreur : la prise en charge aurait du etre refusee !");
         } catch (TransitionInvalideException e) {
+            sansTechnicienRefuse = true;
             System.out.println("Refus attendu : " + e.getMessage());
         }
-        System.out.println("Etat inchange : " + ticketSansTechnicien.getEtat());
 
-        // Refuser null ne doit pas retirer le technicien d'un ticket en cours.
+        verifierCondition(
+                "prise en charge sans technicien refusee",
+                sansTechnicienRefuse && ticketSansTechnicien.getEtat() == EtatTicket.OUVERT
+        );
+
         ticketSansTechnicien.assigner(superBob);
         ticketSansTechnicien.prendreEnCharge();
+
         boolean nullRefuse = false;
         try {
             ticketSansTechnicien.assigner(null);
@@ -212,88 +199,92 @@ public class Main {
             nullRefuse = true;
             System.out.println("Refus attendu : " + e.getMessage());
         }
-        if (!nullRefuse || ticketSansTechnicien.getTechnicien() != superBob
-                || ticketSansTechnicien.getEtat() != EtatTicket.EN_COURS) {
-            throw new AssertionError("Echec : affectation nulle ou ticket modifie.");
-        }
-        System.out.println("OK : null refuse, technicien et etat conserves.");
 
-        // Une affectation apres resolution doit lever notre exception.
+        verifierCondition(
+                "affectation nulle refusee sans modifier le ticket",
+                nullRefuse
+                        && ticketSansTechnicien.getTechnicien() == superBob
+                        && ticketSansTechnicien.getEtat() == EtatTicket.EN_COURS
+        );
+
         ticketSansTechnicien.resoudre();
         Technicien autreTechnicien = new Technicien(744, "Alice", "alice@tech2IE.bf");
         boolean affectationRefusee = false;
+        int historiqueAvantAffectationRefusee = ticketSansTechnicien.getHistorique().size();
+
         try {
             ticketSansTechnicien.assigner(autreTechnicien);
         } catch (TransitionInvalideException e) {
             affectationRefusee = true;
             System.out.println("Refus attendu : " + e.getMessage());
         }
-        if (!affectationRefusee || ticketSansTechnicien.getTechnicien() != superBob
-                || ticketSansTechnicien.getEtat() != EtatTicket.RESOLU) {
-            throw new AssertionError("Echec : affectation acceptee apres resolution.");
-        }
-        System.out.println("OK : affectation refusee, ticket resolu inchange.");
 
-        // P6 : les dix essais sont directement dans main.
+        verifierCondition(
+                "affectation apres resolution refusee et historique inchange",
+                affectationRefusee
+                        && ticketSansTechnicien.getTechnicien() == superBob
+                        && ticketSansTechnicien.getEtat() == EtatTicket.RESOLU
+                        && ticketSansTechnicien.getHistorique().size() == historiqueAvantAffectationRefusee
+        );
+
+        // ==========================================
+        // P6 : essais du registre
+        // ==========================================
         System.out.println("\n=== P6 : essais du registre ===");
         RegistreTicketsEnMemoire registre = new RegistreTicketsEnMemoire();
+        int essaisRegistreReussis = 0;
 
-        System.out.println("P6.1 - Registre vide");
-        if (registre.taille() != 0 || !registre.lister().isEmpty()) {
-            throw new AssertionError("Le registre doit etre vide.");
+        if (verifierCondition("P6.1 registre vide",
+                registre.taille() == 0 && registre.lister().isEmpty())) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : taille 0 et liste vide.");
 
-        System.out.println("P6.2 - Ajout du ticket 101");
         boolean ajout = registre.ajouter(101, ticketSidibe);
-        if (!ajout || registre.taille() != 1) {
-            throw new AssertionError("L'ajout doit reussir et la taille doit valoir 1.");
+        if (verifierCondition("P6.2 ajout du ticket 101",
+                ajout && registre.taille() == 1)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : ajout true, taille 1.");
 
-        System.out.println("P6.3 - Doublon de numero 101");
         Ticket doublon = new TicketIncident(101, "Autre titre", "Autre description",
                 Priorite.BASSE, sidibe, salleB65, "Autre ecran");
         boolean ajoutDoublon = registre.ajouter(101, doublon);
         Optional<Ticket> conserve = registre.chercher(101);
-        if (ajoutDoublon || registre.taille() != 1
-                || conserve.isEmpty() || conserve.get() != ticketSidibe) {
-            throw new AssertionError("Le doublon ne doit pas remplacer le ticket initial.");
+        if (verifierCondition("P6.3 doublon refuse",
+                !ajoutDoublon
+                        && registre.taille() == 1
+                        && conserve.isPresent()
+                        && conserve.get() == ticketSidibe)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : doublon false, taille 1, meme objet initial conserve.");
 
-        System.out.println("P6.4 - Recherche presente : 101");
         Optional<Ticket> trouve = registre.chercher(101);
-        if (!trouve.isPresent() || trouve.get() != ticketSidibe || registre.taille() != 1) {
-            throw new AssertionError("Le ticket 101 doit etre retrouve sans modification.");
+        if (verifierCondition("P6.4 recherche presente",
+                trouve.isPresent() && trouve.get() == ticketSidibe && registre.taille() == 1)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : ticket 101 present.");
 
-        System.out.println("P6.5 - Recherche absente : 999");
-        if (!registre.chercher(999).isEmpty() || registre.taille() != 1
-                || registre.chercher(101).get() != ticketSidibe) {
-            throw new AssertionError("La recherche absente doit laisser le registre inchange.");
+        if (verifierCondition("P6.5 recherche absente",
+                registre.chercher(999).isEmpty()
+                        && registre.taille() == 1
+                        && registre.chercher(101).get() == ticketSidibe)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : Optional vide, registre inchange.");
 
-        System.out.println("P6.6 - Retrait present : 101");
         boolean retrait = registre.retirer(101);
-        if (!retrait || registre.taille() != 0 || registre.chercher(101).isPresent()) {
-            throw new AssertionError("Le ticket doit etre retire et la taille diminuer.");
+        if (verifierCondition("P6.6 retrait present",
+                retrait && registre.taille() == 0 && registre.chercher(101).isEmpty())) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : retrait true, taille 0.");
 
-        System.out.println("P6.7 - Retrait absent : 999");
-        // Un ticket temoin permet de verifier qu'un retrait absent le preserve.
         registre.ajouter(101, ticketSidibe);
         boolean retraitAbsent = registre.retirer(999);
-        if (retraitAbsent || registre.taille() != 1
-                || registre.chercher(101).get() != ticketSidibe) {
-            throw new AssertionError("Le retrait absent doit laisser le registre inchange.");
+        if (verifierCondition("P6.7 retrait absent",
+                !retraitAbsent
+                        && registre.taille() == 1
+                        && registre.chercher(101).get() == ticketSidibe)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : retrait false, taille 1 et ticket initial conserve.");
 
-        System.out.println("P6.8 - Ajout interdit dans la liste retournee");
         List<Ticket> copie = registre.lister();
         boolean listeProtegee = false;
         try {
@@ -301,178 +292,211 @@ public class Main {
         } catch (UnsupportedOperationException e) {
             listeProtegee = true;
         }
-        if (!listeProtegee || copie.size() != 1 || registre.taille() != 1
-                || registre.chercher(101).get() != ticketSidibe
-                || registre.chercher(102).isPresent()) {
-            throw new AssertionError("La liste doit etre non modifiable et le registre preserve.");
-        }
-        System.out.println("OK : UnsupportedOperationException, taille du registre inchangee.");
 
-        System.out.println("P6.9 - Recherche par titre : PROBLEME");
+        if (verifierCondition("P6.8 liste retournee protegee",
+                listeProtegee
+                        && copie.size() == 1
+                        && registre.taille() == 1
+                        && registre.chercher(101).get() == ticketSidibe
+                        && registre.chercher(102).isEmpty())) {
+            essaisRegistreReussis++;
+        }
+
         List<Ticket> resultat = registre.rechercherParTitre("PROBLEME");
-        if (resultat.size() != 1 || resultat.get(0) != ticketSidibe
-                || !resultat.equals(registre.rechercherParTitre("probleme"))
-                || registre.taille() != 1) {
-            throw new AssertionError("PROBLEME doit retrouver Probleme d'affichage.");
-        }
+        boolean rechercheTitreCorrecte = resultat.size() == 1
+                && resultat.get(0) == ticketSidibe
+                && resultat.equals(registre.rechercherParTitre("probleme"))
+                && registre.taille() == 1;
+
         resultat.clear();
-        if (registre.taille() != 1 || registre.chercher(101).get() != ticketSidibe) {
-            throw new AssertionError("Modifier le resultat ne doit pas toucher au registre.");
-        }
-        System.out.println("OK : Probleme d'affichage retrouve, casse ignoree, registre preserve.");
+        boolean registreProtege = registre.taille() == 1
+                && registre.chercher(101).get() == ticketSidibe;
 
-        System.out.println("P6.10 - Recherche par titre sans resultat");
+        if (verifierCondition("P6.9 recherche par titre et protection du registre",
+                rechercheTitreCorrecte && registreProtege)) {
+            essaisRegistreReussis++;
+        }
+
         List<Ticket> aucun = registre.rechercherParTitre("introuvable");
-        if (!aucun.isEmpty() || registre.taille() != 1
-                || registre.chercher(101).get() != ticketSidibe) {
-            throw new AssertionError("Le resultat doit etre vide et le registre inchange.");
+        if (verifierCondition("P6.10 recherche par titre sans resultat",
+                aucun.isEmpty()
+                        && registre.taille() == 1
+                        && registre.chercher(101).get() == ticketSidibe)) {
+            essaisRegistreReussis++;
         }
-        System.out.println("OK : liste vide, registre inchange.");
-        System.out.println("P6 : 10 essais sur 10 reussis.");
 
-        // P5 : les tickets des scenarios precedents sont resolus.
+        System.out.println("P6 : " + essaisRegistreReussis + " essais sur 10 reussis.");
 
+        // ==========================================
+        // Recherche triee et regroupement par etat
+        // ==========================================
         Ticket enCours = new TicketIncident(104, "Probleme clavier", "Clavier bloque",
                 Priorite.MOYENNE, sidibe, salleB65, "Clavier");
         enCours.assigner(superBob);
         enCours.prendreEnCharge();
+
         Ticket ouvert = new TicketDemandeService(105, "Installer Java", "Installation demandee",
                 Priorite.BASSE, bernadette, salleB67, "Java");
+
         Ticket ouvertBis = new TicketIncident(106, "probleme CLAVIER", "Touches bloquees",
                 Priorite.BASSE, sidibe, salleB65, "Autre clavier");
+
         registre.ajouter(104, enCours);
         registre.ajouter(105, ouvert);
         registre.ajouter(106, ouvertBis);
 
-
         List<Ticket> tries = registre.rechercherParTitre("PROBLEME");
-        if (!tries.equals(List.of(enCours, ouvertBis, ticketSidibe))) {
-            throw new AssertionError("Le tri doit suivre le titre puis le numero.");
-        }
-        System.out.println("OK : tri par titre puis numero.");
+        verifierCondition(
+                "tri par titre puis numero",
+                tries.equals(List.of(enCours, ouvertBis, ticketSidibe))
+        );
 
         System.out.println("\n=== P5 : regroupement par etat ===");
         Map<EtatTicket, List<Ticket>> groupes = registre.regrouperParEtat();
         System.out.println(groupes);
-        if (groupes.size() != 3 || !groupes.get(EtatTicket.EN_COURS).equals(List.of(enCours))
-                || !groupes.get(EtatTicket.RESOLU).equals(List.of(ticketSidibe))
-                || groupes.get(EtatTicket.OUVERT).size() != 2
-                || !groupes.get(EtatTicket.OUVERT).containsAll(List.of(ouvert, ouvertBis))) {
-            throw new AssertionError("Les tickets doivent etre regroupes selon leur etat.");
-        }
+
+        verifierCondition(
+                "tickets regroupes selon leur etat",
+                groupes.size() == 3
+                        && groupes.get(EtatTicket.EN_COURS).equals(List.of(enCours))
+                        && groupes.get(EtatTicket.RESOLU).equals(List.of(ticketSidibe))
+                        && groupes.get(EtatTicket.OUVERT).size() == 2
+                        && groupes.get(EtatTicket.OUVERT).containsAll(List.of(ouvert, ouvertBis))
+        );
+
         groupes.get(EtatTicket.OUVERT).clear();
         groupes.clear();
-        if (registre.taille() != 4
-                || registre.regrouperParEtat().get(EtatTicket.OUVERT).size() != 2) {
-            throw new AssertionError("Modifier les groupes ne doit pas toucher au registre.");
-        }
+        verifierCondition(
+                "modifier les groupes retournes ne modifie pas le registre",
+                registre.taille() == 4
+                        && registre.regrouperParEtat().get(EtatTicket.OUVERT).size() == 2
+        );
+
         Map<EtatTicket, List<Ticket>> groupesVides =
                 new RegistreTicketsEnMemoire().regrouperParEtat();
-        if (groupesVides.size() != 3
-                || !groupesVides.containsKey(EtatTicket.OUVERT)
-                || !groupesVides.containsKey(EtatTicket.EN_COURS)
-                || !groupesVides.containsKey(EtatTicket.RESOLU)
-                || !groupesVides.get(EtatTicket.OUVERT).isEmpty()
-                || !groupesVides.get(EtatTicket.EN_COURS).isEmpty()
-                || !groupesVides.get(EtatTicket.RESOLU).isEmpty()) {
-            throw new AssertionError("Un registre vide doit donner trois groupes vides.");
-        }
-        System.out.println("OK : registre vide, trois cles et trois listes vides.");
-        System.out.println("OK : trois etats representes et registre protege.");
+
+        verifierCondition(
+                "registre vide : trois groupes vides",
+                groupesVides.size() == 3
+                        && groupesVides.containsKey(EtatTicket.OUVERT)
+                        && groupesVides.containsKey(EtatTicket.EN_COURS)
+                        && groupesVides.containsKey(EtatTicket.RESOLU)
+                        && groupesVides.get(EtatTicket.OUVERT).isEmpty()
+                        && groupesVides.get(EtatTicket.EN_COURS).isEmpty()
+                        && groupesVides.get(EtatTicket.RESOLU).isEmpty()
+        );
 
         int refus = 0;
-        try { registre.ajouter(null, ticketSidibe); } catch (IllegalArgumentException e) { refus++; }
-        try { registre.ajouter(107, null); } catch (IllegalArgumentException e) { refus++; }
-        try { registre.ajouter(107, ticketSidibe); } catch (IllegalArgumentException e) { refus++; }
-        try { registre.rechercherParTitre(null); } catch (IllegalArgumentException e) { refus++; }
-        if (refus != 4 || registre.taille() != 4 || registre.chercher(107).isPresent()) {
-            throw new AssertionError("Les arguments invalides doivent etre refuses sans modification.");
+        try {
+            registre.ajouter(null, ticketSidibe);
+        } catch (IllegalArgumentException e) {
+            refus++;
         }
-        System.out.println("OK : null et cle incoherente refuses sans modification.");
+        try {
+            registre.ajouter(107, null);
+        } catch (IllegalArgumentException e) {
+            refus++;
+        }
+        try {
+            registre.ajouter(107, ticketSidibe);
+        } catch (IllegalArgumentException e) {
+            refus++;
+        }
+        try {
+            registre.rechercherParTitre(null);
+        } catch (IllegalArgumentException e) {
+            refus++;
+        }
+
+        verifierCondition(
+                "arguments invalides refuses sans modification du registre",
+                refus == 4 && registre.taille() == 4 && registre.chercher(107).isEmpty()
+        );
 
         ComparaisonRecherche.executer(sidibe, salleB65);
     }
-     // ==================================================
-// TESTS DU JALON 1 : MODELES ET INVARIANTS
-// ==================================================
 
-        public static void testerInvariants() {
+    // ==================================================
+    // TESTS DU JALON 1 : MODELE ET INVARIANTS
+    // ==================================================
+    public static void testerInvariants() {
+        System.out.println("\n===== TESTS DU JALON 1 =====");
 
-            System.out.println("\n===== TESTS DU JALON 1 =====");
+        Utilisateur mariam = new Utilisateur(900, "Mariam", "mariam@2IE.bf");
+        Lieu salleC2 = new Lieu(900, "salleC2", "Batiment Principal");
 
-            Utilisateur Mariam =
-                    new Utilisateur(900, "Mariam", "mariam@2IE.bf");
-
-            Lieu salleC2 =
-                    new Lieu(900, "salleC2", "Batiment Principal");
-
-            // Test 1 : numéro du ticket <= 0
-            verifierRejet("Numero du ticket <= 0", () ->
-                    new TicketIncident(
-                            0, "Probme de climatisation", "la clim ne fonctionne pas",
-                            Priorite.HAUTE, Mariam, salleC2, "la clim"
-                    )
+        // Test 1 : numero du ticket <= 0
+        try {
+            new TicketIncident(
+                    0, "Probleme de climatisation", "La clim ne fonctionne pas",
+                    Priorite.HAUTE, mariam, salleC2, "La clim"
             );
-
-            // Test 2 : titre vide
-            verifierRejet("Titre vide", () ->
-                    new TicketIncident(
-                            901, "   ", "la clim ne fonctionne pas",
-                            Priorite.HAUTE, Mariam, salleC2, "la clim"
-                    )
-            );
-
-            // Test 3 : priorité null
-            verifierRejet("Priorite null", () ->
-                    new TicketIncident(
-                            902, "Probleme de climatisation", "la clim ne fonctionne pas",
-                            null, Mariam, salleC2, "la clim"
-                    )
-            );
-
-            // Test 4 : auteur null
-            verifierRejet("Auteur null", () ->
-                    new TicketIncident(
-                            903, "Probleme", "Description valide",
-                            Priorite.HAUTE, null, salleC2, "Ecran"
-                    )
-            );
-
-
-            // Test 5 : email vide
-            verifierRejet("Email vide", () ->
-                    new Utilisateur(
-                            905, "Mariam", "   "
-                    )
-            );
-
-            // Test 6 : numéro du lieu <= 0
-            verifierRejet("Numero du lieu <= 0", () ->
-                    new Lieu(
-                            0, "SalleC2", "Batiment Principal"
-                    )
-            );
-
-            System.out.println("===== FIN DES TESTS =====\n");
+            System.out.println("ECHEC : numero du ticket <= 0 accepte");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : numero du ticket <= 0 refuse");
         }
 
-
-        // Méthode qui vérifie qu'une donnée invalide est refusée
-        private static void verifierRejet(String nomTest, Runnable operation) {
-
-            try {
-                operation.run();
-
-                System.out.println("ECHEC : " + nomTest
-                        + " - aucune exception n'a ete levee.");
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("REUSSI : " + nomTest);
-
-            } catch (Exception e) {
-                System.out.println("ECHEC : " + nomTest
-                        + " - exception inattendue : "
-                        + e.getClass().getSimpleName());
-            }
+        // Test 2 : titre vide
+        try {
+            new TicketIncident(
+                    901, "   ", "La clim ne fonctionne pas",
+                    Priorite.HAUTE, mariam, salleC2, "La clim"
+            );
+            System.out.println("ECHEC : titre vide accepte");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : titre vide refuse");
         }
+
+        // Test 3 : priorite null
+        try {
+            new TicketIncident(
+                    902, "Probleme de climatisation", "La clim ne fonctionne pas",
+                    null, mariam, salleC2, "La clim"
+            );
+            System.out.println("ECHEC : priorite null acceptee");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : priorite null refusee");
+        }
+
+        // Test 4 : auteur null
+        try {
+            new TicketIncident(
+                    903, "Probleme", "Description valide",
+                    Priorite.HAUTE, null, salleC2, "Ecran"
+            );
+            System.out.println("ECHEC : auteur null accepte");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : auteur null refuse");
+        }
+
+        // Test 5 : email vide
+        try {
+            new Utilisateur(905, "Mariam", "   ");
+            System.out.println("ECHEC : email vide accepte");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : email vide refuse");
+        }
+
+        // Test 6 : numero du lieu <= 0
+        try {
+            new Lieu(0, "SalleC2", "Batiment Principal");
+            System.out.println("ECHEC : numero du lieu <= 0 accepte");
+        } catch (IllegalArgumentException e) {
+            System.out.println("REUSSI : numero du lieu <= 0 refuse");
+        }
+
+        System.out.println("===== FIN DES TESTS =====\n");
     }
+
+    // Petite methode de verification pour les tests manuels.
+    // Elle utilise seulement un booleen et un if/else.
+    private static boolean verifierCondition(String nomTest, boolean condition) {
+        if (condition) {
+            System.out.println("REUSSI : " + nomTest);
+            return true;
+        }
+
+        System.out.println("ECHEC : " + nomTest);
+        return false;
+    }
+}

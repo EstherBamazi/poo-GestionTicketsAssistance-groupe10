@@ -1,118 +1,196 @@
-# Cahier des Charges — Système de Tickets d’Assistance
+# Cahier des charges : système de tickets d’assistance
 
-**Gestion de tickets d’assistance** • *Sujet C — Groupe 10*  
-**Auteurs :** BAMAZI Yesuwaba Esther, LOUE Rayan, KABORE Cedric
+**Sujet C : Groupe 10**  
+**Auteurs : BAMAZI Yesuwaba Esther, LOUE Rayan, KABORE Cedric**
 
----
+## 1. Contexte
 
-## 1. Contexte et Objectifs
+Le projet consiste à réaliser un système simplifié de gestion de tickets d’assistance dans un établissement universitaire.
 
-Notre projet vise à faciliter le suivi des demandes d’assistance dans un établissement universitaire. Le système doit centraliser les incidents et les demandes de service, identifier leur auteur et leur lieu, puis suivre leur traitement jusqu’à la résolution.
+Lorsqu’un utilisateur rencontre un incident ou souhaite demander un service, il doit pouvoir créer un ticket contenant les informations nécessaires à son traitement.
 
-Un étudiant qui rencontre un problème doit pouvoir le signaler en précisant sa nature et son lieu. Le service d’assistance doit disposer des informations nécessaires pour affecter un technicien, suivre le traitement et connaître les demandes résolues. Le système s’inspire du fonctionnement d’un outil de gestion d’assistance comme **GLPI**.
+Le système doit permettre de suivre ce ticket depuis sa création jusqu’à sa résolution.
 
-> **Exemple :** Sidibé rencontre un problème d’affichage en salle B6.5. Un ticket décrit la panne et l’écran concerné. Bob est affecté au ticket, le prend en charge et le marque comme résolu lorsque son intervention est terminée.
-
----
+La solution s’inspire du fonctionnement général d’un outil de type GLPI.
 
 ## 2. Acteurs
 
 | Acteur | Rôle |
-| :--- | :--- |
-| **Utilisateur** | Signaler un incident ou demander un service ; consulter les informations et l’avancement du ticket. |
-| **Technicien** | Être affecté à une demande, la prendre en charge et en signaler la résolution. |
+|---|---|
+| **Utilisateur** | Déclarer un incident ou une demande de service. |
+| **Technicien** | Être affecté à un ticket et participer à son traitement. |
 
----
+## 3. Périmètre fonctionnel
 
-## 3. Périmètre
+Le système doit gérer :
 
-Le système doit gérer les utilisateurs, les techniciens, les lieux et les tickets. Il doit permettre de conserver plusieurs tickets pendant une exécution, de les consulter, de les rechercher et de les regrouper par état. Deux catégories sont distinguées :
-* **Incidents :** Concernent un équipement.
-* **Demandes de service :** Concernent une prestation/demande.
+- les utilisateurs ;
+- les techniciens ;
+- les lieux ;
+- les tickets ;
+- les priorités ;
+- les états des tickets ;
+- l’historique des principales actions réalisées sur un ticket.
 
-> **Remarque :** La démonstration des fonctionnalités se fait en console. Le périmètre **exclut** l’interface graphique, l’authentification, l’affectation automatique, les pièces jointes, les notifications, les dates, l’historique et la conservation des données après l’arrêt du programme.
+Deux catégories de tickets sont prévues :
 
----
+- **incident**, concernant un équipement ;
+- **demande de service**, concernant une prestation ou un besoin.
 
-## 4. Informations Nécessaires
+## 4. Besoins fonctionnels
 
-| Élément | Informations à conserver |
-| :--- | :--- |
-| **Utilisateur / Technicien** | Numéro strictement positif, nom et adresse électronique non vides. |
-| **Lieu** | Numéro strictement positif, nom et bâtiment non vides. |
-| **Ticket** | Numéro unique et strictement positif, titre, description, priorité (`HAUTE`, `MOYENNE`, `BASSE`), auteur, lieu, état et technicien éventuellement affecté. |
-| **Incident** | Équipement concerné et délai cible de **4 heures**. |
-| **Demande de service** | Service demandé et délai cible de **24 heures**. |
+| Référence | Besoin |
+|---|---|
+| **BF1** | Créer des utilisateurs, techniciens et lieux. |
+| **BF2** | Créer un ticket de type incident ou demande de service. |
+| **BF3** | Affecter un technicien à un ticket. |
+| **BF4** | Modifier la priorité d’un ticket lorsque cette modification est autorisée. |
+| **BF5** | Prendre en charge un ticket. |
+| **BF6** | Résoudre un ticket. |
+| **BF7** | Consulter les informations et l’état d’un ticket. |
+| **BF8** | Conserver l’historique des principales actions effectuées sur un ticket. |
+| **BF9** | Ajouter et conserver plusieurs tickets dans un registre. |
+| **BF10** | Rechercher un ticket par son numéro. |
+| **BF11** | Retirer, lister et compter les tickets enregistrés. |
+| **BF12** | Rechercher des tickets par leur titre. |
+| **BF13** | Regrouper les tickets selon leur état. |
 
-* Les informations obligatoires ne doivent pas être absentes ou vides.
-* Un ticket doit toujours avoir un auteur et un lieu. Son numéro doit rester inchangé.
-* Les délais cibles sont affichés à titre indicatif, sans calcul d’échéance ni déclenchement d’alerte.
+## 5. Informations obligatoires
 
----
+### Personne
 
-## 5. Fonctions Attendues
+Une personne doit posséder :
 
-| Fonction | Résultat attendu |
-| :--- | :--- |
-| **Déclarer une demande** | Créer un ticket incident ou une demande de service avec toutes les informations obligatoires. |
-| **Affecter un technicien** | Associer un technicien à un ticket non résolu, sans changer son état. |
-| **Prendre en charge** | Faire passer un ticket ouvert et affecté à l’état `EN_COURS`. |
-| **Résoudre** | Faire passer un ticket `EN_COURS` à l’état `RESOLU`. |
-| **Consulter** | Afficher les informations du ticket, son état et son délai cible. |
-| **Gérer le registre** | Ajouter, retrouver par numéro, retirer et lister les tickets ; connaître leur nombre. |
-| **Rechercher par titre** | Retrouver les titres contenant un mot-clé (insensible à la casse) et présenter un résultat trié. |
-| **Regrouper par état** | Présenter ensemble les tickets ouverts, en cours et résolus. |
+- un numéro strictement positif ;
+- un nom renseigné ;
+- une adresse électronique renseignée.
 
----
+### Lieu
 
-## 6. Règles de Gestion des États
+Un lieu doit posséder :
 
-| Situation | Action | Résultat |
-| :--- | :--- | :--- |
-| **Création** | Déclarer un ticket | `OUVERT`, sans technicien |
-| **OUVERT** | Affecter un technicien | État inchangé |
-| **OUVERT avec technicien** | Prendre en charge | `EN_COURS` |
-| **OUVERT sans technicien** | Prendre en charge | **Refus** |
-| **OUVERT** | Résoudre | **Refus** |
-| **EN_COURS** | Changer de technicien | État inchangé |
-| **EN_COURS** | Prendre en charge à nouveau | **Refus** |
-| **EN_COURS** | Résoudre | `RESOLU` |
-| **RESOLU** | Affecter, reprendre ou résoudre à nouveau | **Refus** |
+- un numéro strictement positif ;
+- un nom renseigné ;
+- un bâtiment renseigné.
 
-* Une affectation nulle est refusée.
-* Un ticket en cours de traitement doit conserver un technicien affecté. Le remplacement de ce technicien est autorisé tant que le ticket n’est pas résolu.
-* Le cycle de traitement suit strictemen l'ordre `OUVERT` $\rightarrow$ `EN_COURS` $\rightarrow$ `RESOLU`. Aucune réouverture n’est prévue.
-* Toute action refusée doit produire un message explicite et laisser le ticket inchangé.
+### Ticket
 
----
+Un ticket doit posséder :
 
-## 7. Règles de Gestion du Registre
+- un numéro strictement positif ;
+- un titre ;
+- une description ;
+- une priorité ;
+- un auteur ;
+- un lieu.
 
-* **Identifiant :** Le numéro identifie un ticket indépendamment de sa catégorie. L’ajout d’un numéro déjà enregistré est refusé et ne remplace pas le ticket conservé.
-* **Intégrité :** Une recherche ou un retrait sur un numéro absent doit signaler cette absence sans modifier les autres tickets.
-* **Protection :** La consultation d’une liste, une recherche et un regroupement doivent préserver le contenu du registre (les collections retournées sont protégées contre toute modification directe).
-* **Absence de résultat :** Une recherche sans correspondance retourne une liste vide.
+Les priorités autorisées sont :
 
----
+- `BASSE` ;
+- `MOYENNE` ;
+- `HAUTE`.
 
-## 8. Critères de Validation et Livrables
+Les états autorisés sont :
 
-### Essais du Registre (10 essais obligatoires)
-1. Registre vide
-2. Ajout ordinaire
-3. Doublon refusé
-4. Recherche d’un numéro présent
-5. Recherche d’un numéro absent
-6. Retrait présent
-7. Retrait absent
-8. Protection de la liste retournée
-9. Recherche textuelle (insensibilité à la casse)
-10. Recherche textuelle sans correspondance (registre inchangé)
+- `OUVERT` ;
+- `EN_COURS` ;
+- `RESOLU`.
 
-### Livrables du Projet
-* Code Java
-* Scénarios d’essai
-* Diagramme de classes
-* README présentant les choix de structures
-* Cahier des charges et Rapport
-* Commit Git : `Ajoute catalogue et collections` avec le tag `jalon-collections`
+## 6. Règles métier
+
+### RG1 : création d’un ticket
+
+Un ticket est créé dans l’état `OUVERT` et sans technicien affecté.
+
+### RG2 : affectation
+
+Un technicien peut être affecté à un ticket tant que celui-ci n’est pas résolu.
+
+Un technicien absent ou `null` est refusé.
+
+L’affectation d’un technicien ne change pas l’état du ticket.
+
+### RG3 : prise en charge
+
+Un ticket peut passer de `OUVERT` à `EN_COURS` uniquement s’il possède un technicien affecté.
+
+### RG4 : résolution
+
+Un ticket peut passer de `EN_COURS` à `RESOLU`.
+
+Un ticket ne peut pas être résolu directement depuis l’état `OUVERT`.
+
+### RG5 : ticket résolu
+
+Un ticket résolu ne peut plus être repris en charge ni réaffecté.
+
+Aucune réouverture n’est prévue dans cette version.
+
+### RG6 : priorité
+
+La priorité d’un ticket doit être renseignée.
+
+La priorité d’un ticket résolu ne peut plus être modifiée.
+
+### RG7 : opérations refusées
+
+Une opération refusée doit laisser le ticket dans l’état où il se trouvait avant la tentative.
+
+### RG8 : identité
+
+Le numéro constitue l’identité du ticket et ne doit pas être modifié après sa création.
+
+Deux tickets ayant le même numéro représentent la même identité métier.
+
+### RG9 : registre
+
+Deux tickets portant le même numéro ne peuvent pas être enregistrés simultanément.
+
+Une opération de consultation ne doit pas permettre de modifier directement le contenu du registre.
+
+### RG10 : historique obligatoire
+
+Chaque ticket doit conserver une trace des principales actions réalisées au cours de son traitement.
+
+L’historique doit notamment pouvoir représenter :
+
+- la création ;
+- l’affectation ;
+- le changement de priorité ;
+- la prise en charge ;
+- la résolution.
+
+Une opération refusée ne doit pas ajouter d’événement à l’historique.
+
+## 7. Délais cibles
+
+Un incident possède un délai cible de **4 heures**.
+
+Une demande de service possède un délai cible de **24 heures**.
+
+Ces délais sont indicatifs. Aucun calcul d’échéance réelle n’est demandé dans cette version.
+
+## 8. Hors périmètre
+
+La version actuelle ne prévoit pas :
+
+- d’interface graphique ;
+- d’authentification ;
+- de notifications ;
+- de pièces jointes ;
+- de stockage permanent ;
+- d’affectation automatique ;
+- de dates ou d’échéances réelles ;
+- de réouverture des tickets résolus.
+
+## 9. Critères de validation
+
+Le projet est considéré conforme lorsque :
+
+- les objets invalides sont refusés ;
+- les transitions autorisées fonctionnent ;
+- les transitions interdites sont refusées sans modifier le ticket ;
+- les deux catégories de tickets peuvent être manipulées ;
+- les tickets peuvent être enregistrés, recherchés et regroupés ;
+- l’historique est conservé ;
+- le programme compile et les scénarios de démonstration s’exécutent correctement.

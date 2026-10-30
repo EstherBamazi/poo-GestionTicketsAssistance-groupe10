@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
 
     @Override
     public boolean ajouter(Integer cle, Ticket element) {
-
         if (cle == null || element == null) {
             throw new IllegalArgumentException("La cle et le ticket sont obligatoires.");
         }
@@ -19,9 +17,11 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
         if (cle != element.getNumero()) {
             throw new IllegalArgumentException("La cle doit correspondre au numero du ticket.");
         }
+
         if (tickets.containsKey(cle)) {
             return false;
         }
+
         tickets.put(cle, element);
         return true;
     }
@@ -52,38 +52,52 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
         return tickets.size();
     }
 
-    // Renvoie une nouvelle liste des titres contenant le mot-cle, triee par titre puis numero.
-    // La recherche et le tri ignorent la casse ; null est refuse, un mot-cle vide retrouve tout.
     public List<Ticket> rechercherParTitre(String motCle) {
         if (motCle == null) {
             throw new IllegalArgumentException("Le mot-cle est obligatoire.");
         }
-        String recherche = motCle.toLowerCase(Locale.ROOT);
+
+        String recherche = motCle.toLowerCase();
         List<Ticket> resultat = new ArrayList<>();
+
         for (Ticket ticket : tickets.values()) {
-            if (ticket.getTitre().toLowerCase(Locale.ROOT).contains(recherche)) {
+            if (ticket.getTitre().toLowerCase().contains(recherche)) {
                 resultat.add(ticket);
             }
         }
-        resultat.sort((premier, second) -> {
-            int comparaison = premier.getTitre().compareToIgnoreCase(second.getTitre());
-            if (comparaison != 0) {
-                return comparaison;
+
+        // Tri par titre, puis par numero si les titres sont identiques.
+        // Le tri est ecrit avec des boucles afin de rester proche des notions vues en cours.
+        for (int i = 0; i < resultat.size() - 1; i++) {
+            for (int j = i + 1; j < resultat.size(); j++) {
+                Ticket premier = resultat.get(i);
+                Ticket second = resultat.get(j);
+
+                int comparaisonTitre = premier.getTitre().compareToIgnoreCase(second.getTitre());
+                boolean echanger = comparaisonTitre > 0
+                        || (comparaisonTitre == 0 && premier.getNumero() > second.getNumero());
+
+                if (echanger) {
+                    resultat.set(i, second);
+                    resultat.set(j, premier);
+                }
             }
-            return Integer.compare(premier.getNumero(), second.getNumero());
-        });
+        }
+
         return resultat;
     }
 
-
     public Map<EtatTicket, List<Ticket>> regrouperParEtat() {
         Map<EtatTicket, List<Ticket>> groupes = new HashMap<>();
+
         for (EtatTicket etat : EtatTicket.values()) {
             groupes.put(etat, new ArrayList<>());
         }
+
         for (Ticket ticket : tickets.values()) {
             groupes.get(ticket.getEtat()).add(ticket);
         }
+
         return groupes;
     }
 }
