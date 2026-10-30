@@ -1,283 +1,594 @@
-Sujet C : Gestion de tickets d'assistance
-Appliqué au cas du système GLPI.
+# Sujet C : Gestion de tickets d'assistance
 
-Membres du groupe 10
+Application au cas d'un système de type GLPI.
 
-BAMAZI Yesuwaba Esther
-LOUE Rayan
-KABORE Cedric
+## Membres du groupe 10
 
-  Compiler et lancer
+- BAMAZI Yesuwaba Esther
+- LOUE Rayan
+- KABORE Cedric
 
+## Compiler et lancer
 
-Dans IntelliJ IDEA : ouvrir le projet, puis exécuter la classe Main (bouton Run vert).
+Dans IntelliJ IDEA : ouvrir le projet puis exécuter la classe `Main`.
+
 En ligne de commande, depuis la racine du dépôt :
 
+```bash
 javac -d out src/*.java
 java -cp out Main
-Structure du dépôt
+```
+
+## Structure du dépôt
+
+```text
 src/     classes Java et Main
-docs/    diagramme-classes.png (diagramme de classes)
+docs/    diagramme-classe.png, cahier des charges, rapport et synthèse
+```
 
-  Le besoin
+## Le besoin
 
-Un système de gestion de tickets d'assistance de type GLPI qui permet aux etudiants(utilisateurs) de déclarer un incident ou une demande de service concernant leur salle de classe(lieu) , et de suivre l'avancement de leur ticket d'incident.
+Le projet représente un système de gestion de tickets d'assistance de type GLPI permettant aux utilisateurs d'un établissement universitaire de déclarer un incident ou une demande de service concernant un lieu, puis de suivre son traitement.
 
-  Actions principales
-Declarer un incident
-1.	créer un utilisateur, un lieu et un technicien
-2.	créer un ticket, ouvert à sa création
-3.  prendre en charge la reclamation
-4.	assigner un technicien au ticket
-5.	prendre le ticket en charge
+Un ticket peut être affecté à un technicien, pris en charge puis résolu.
 
-Resoudre le probleme
-6.	résoudre le ticket
-7.	afficher l'état courant d'un ticket
+Le système conserve également un historique des principales actions réalisées sur chaque ticket.
 
+## Actions principales
 
-  Description du contexte
+### Déclarer une demande
 
-Nous suivons Sidibé, étudiant disposant d'un ordinateur prêté par l'université. Il constate un problème d'affichage en salle B6.5 pendant un CM Java. On représente ce cas par :
+1. créer un utilisateur et un lieu ;
+2. créer un ticket, automatiquement ouvert à sa création ;
+3. affecter un technicien ;
+4. prendre le ticket en charge.
 
-•	un Utilisateur : la personne a qui le sinistre est arrive ici Sidibe
-•	un Lieu : l'endroit ou le sinistre a pris place
-•	un Ticket : le numéro, le titre, la description, la priorité et l'état de suivi de resolution du ticket
-•	un Technicien : celui qui prendra le ticket de sidibe en charge ici c'est Bob
+### Traiter la demande
 
-  Les classes retenues et leur rôle
+5. modifier éventuellement sa priorité ;
+6. résoudre le ticket ;
+7. consulter son état et son historique.
 
-  Classe  :	Rôle
+## Description du contexte
 
-Personne :	classe abstraite, cette classe nous évite les répétitions d'attributs numero, nom, email
-Utilisateur	: personne qui déclare un ticket
-Technicien  : personne qui prend un ticket en charge
-Lieu :	localisation du sinistre, en general une salle de classe ou une chambre sur le campus
-Assignable: interface conseillee par le professeur, capacité à recevoir un technicien
-EtatTicket :	énumération des états d'un ticket : OUVERT, EN_COURS, RESOLU, cela evite des erreurs du a des mauvaises valeurs prise par l'etat
-Ticket : classe abstraite, contiens les données et le cycle de vie d'un ticket, implémente l'interface Assignable
-TicketIncident	:ticket concernant un équipement en panne, délai cible 4 h
-TicketDemandeService	:ticket demandant un service informatique, délai cible 24 h
-Main	: démonstration et essais suggere par l'enonce
+Nous suivons notamment Sidibé, étudiant rencontrant un problème d'affichage en salle B6.5.
 
-  Attributs et visibilité
+Ce cas est représenté par :
 
-Tous les attributs sont privés. Ceux qui sont fixés à la création et ne changent plus sont en plus déclarés final. On respecte ainsi l'encapsulation.
-•	Personne : numero (int), nom (String), email (String)
-•	Lieu : numero (int), nom (String), batiment (String)
-•	Ticket : numero (int), titre (String), description (String), priorite (String), etat (EtatTicket), auteur (Utilisateur), lieu (Lieu), technicien (Technicien)
-•	TicketIncident ajoute equipementConcerne (String)
-•	TicketDemandeService ajoute serviceDemande (String)
-Utilisateur et Technicien ne déclarent aucun attribut : ils héritent de ceux de Personne, c'est l'interet de la classe abstraite.
+- un `Utilisateur` : la personne qui déclare le ticket ;
+- un `Lieu` : l'endroit où le problème est rencontré ;
+- un `Ticket` : la demande contenant un numéro, un titre, une description, une priorité et un état ;
+- un `Technicien` : la personne affectée au traitement du ticket.
 
-  Construction des objets
+## Les classes retenues et leur rôle
 
-Chaque constructeur reçoit toutes les données obligatoires et valide ses paramètres : un numéro doit être strictement positif, un texte ne doit être ni nul ni vide. Une valeur invalide lève une IllegalArgumentException et l'objet n'est pas créé.
-Deux valeurs ne sont pas reçues mais fixées par la classe Ticket elle même : l'état, qui vaut EtatTicket.OUVERT à la création, et le technicien, qui vaut null tant que personne n'a été assigné.
+| Classe / type | Rôle |
+|---|---|
+| `Personne` | Classe abstraite regroupant les attributs communs `numero`, `nom` et `email` |
+| `Utilisateur` | Personne qui déclare un ticket |
+| `Technicien` | Personne pouvant être affectée à un ticket |
+| `Lieu` | Localisation concernée par le ticket |
+| `Assignable` | Interface définissant la capacité à recevoir un technicien |
+| `EtatTicket` | Enum contenant `OUVERT`, `EN_COURS` et `RESOLU` |
+| `Priorite` | Enum contenant `BASSE`, `MOYENNE` et `HAUTE` |
+| `Ticket` | Classe abstraite regroupant les données communes et le cycle de vie d'un ticket |
+| `TicketIncident` | Ticket concernant un équipement, délai cible de 4 h |
+| `TicketDemandeService` | Ticket concernant une demande de service, délai cible de 24 h |
+| `Evenement` | Représente une action conservée dans l'historique d'un ticket |
+| `TransitionInvalideException` | Exception personnalisée signalant une transition métier interdite |
+| `Catalogue<T,K>` | Interface générique définissant les opérations d'un catalogue |
+| `RegistreTicketsEnMemoire` | Stockage et recherche des tickets en mémoire |
+| `ComparaisonRecherche` | Comparaison de la recherche dans une liste et une Map |
+| `Main` | Démonstration du fonctionnement et essais |
 
-  Les méthodes
+## Attributs et visibilité
 
-•	assigner(Technicien) : affecte un technicien au ticket. Un argument null est refusé avec IllegalArgumentException. Une affectation sur un ticket RESOLU est refusée avec TransitionInvalideException.
-•	prendreEnCharge() : fait passer l'état de OUVERT à EN_COURS. Refusée si le ticket n'est pas OUVERT ou si aucun technicien n'est assigné
-•	resoudre() : fait passer l'état de EN_COURS à RESOLU. Refusée si le ticket n'est pas EN_COURS
-•	delaiCibleHeures() : abstraite dans Ticket, redéfinie dans chaque sous classe
-•	role() : abstraite dans Personne, redéfinie dans Utilisateur et Technicien
-•	toString() : redéfinie, appelée automatiquement par System.out.println
-•	les accesseurs et setters utiles
-Toute transition refusée lève une TransitionInvalideException et laisse l'état inchangé.
+Tous les attributs sont privés.
 
-TransitionInvalideException hérite de RuntimeException. Cette exception personnalisée signale une opération interdite par les règles de traitement du ticket. Elle ne nécessite pas de déclaration throws ; Main la capture explicitement pour afficher la cause du refus. Les données de construction invalides et assigner(null) restent signalés par IllegalArgumentException. Le contrôle de null précède celui de l'état : assigner(null) est donc toujours une erreur d'argument, même sur un ticket résolu.
+Les données fixées lors de la création et qui ne doivent plus changer sont également déclarées `final`.
 
-Diagramme de classes
+Principaux attributs :
+
+- `Personne` : `numero`, `nom`, `email`
+- `Lieu` : `numero`, `nom`, `batiment`
+- `Ticket` : `numero`, `titre`, `description`, `priorite`, `etat`, `auteur`, `lieu`, `technicien`
+- `TicketIncident` : `equipementConcerne`
+- `TicketDemandeService` : `serviceDemande`
+- `Ticket` possède également un historique d'objets `Evenement`
+
+La priorité utilise le type `Priorite` et non une chaîne de caractères.
+
+`Utilisateur` et `Technicien` ne redéclarent pas les attributs communs puisqu'ils héritent de `Personne`.
+
+## Construction des objets
+
+Chaque constructeur reçoit les informations nécessaires et vérifie ses paramètres.
+
+Un numéro doit être strictement positif.
+
+Un texte obligatoire ne doit être ni `null` ni vide.
+
+Pour un ticket :
+
+- le titre et la description doivent être non nuls et non vides ;
+- la priorité doit être non nulle ;
+- l'auteur doit être non nul ;
+- le lieu doit être non nul.
+
+Une donnée de construction invalide provoque une `IllegalArgumentException`.
+
+Deux informations sont fixées automatiquement par `Ticket` :
+
+- l'état initial vaut `EtatTicket.OUVERT` ;
+- aucun technicien n'est affecté à la création.
+
+## Encapsulation, mutabilité et alias
+
+`Personne` et `Lieu` possèdent uniquement des attributs privés et `final` et ne fournissent aucun setter.
+
+Ils sont donc immuables dans notre modèle.
+
+Plusieurs tickets peuvent ainsi partager une même référence vers un `Utilisateur` ou un `Lieu` sans risque qu'un ticket modifie indirectement les données de cet objet par alias.
+
+Le numéro, le titre, la description, l'auteur et le lieu d'un ticket sont également fixés lors de sa construction.
+
+Les données qui peuvent évoluer, notamment l'état, la priorité et le technicien, sont modifiées uniquement par les méthodes métier prévues.
+
+## Les méthodes principales
+
+### Affectation
+
+```java
+assigner(Technicien technicien)
+```
+
+Affecte un technicien au ticket.
+
+- `null` est refusé avec `IllegalArgumentException` ;
+- une affectation sur un ticket résolu est refusée avec `TransitionInvalideException` ;
+- l'affectation ne change pas l'état du ticket.
+
+### Prise en charge
+
+```java
+prendreEnCharge()
+```
+
+Fait passer un ticket de `OUVERT` à `EN_COURS`.
+
+L'opération est refusée si :
+
+- le ticket n'est pas `OUVERT` ;
+- aucun technicien n'est affecté.
+
+### Résolution
+
+```java
+resoudre()
+```
+
+Fait passer un ticket de `EN_COURS` à `RESOLU`.
+
+L'opération est refusée si le ticket n'est pas dans l'état `EN_COURS`.
+
+### Modification de priorité
+
+```java
+changerPriorite(Priorite priorite)
+```
+
+Permet de modifier la priorité.
+
+Une priorité `null` est refusée.
+
+La priorité d'un ticket résolu ne peut plus être modifiée.
+
+### Autres méthodes
+
+- `delaiCibleHeures()` : abstraite dans `Ticket`, redéfinie dans chaque sous-classe ;
+- `role()` : abstraite dans `Personne`, redéfinie dans `Utilisateur` et `Technicien` ;
+- `toString()` : fournit l'affichage d'un objet ;
+- getters nécessaires pour consulter les informations.
+
+L'état n'a pas de setter.
+
+Il ne peut évoluer qu'à travers `prendreEnCharge()` et `resoudre()`.
+
+## Exceptions
+
+`TransitionInvalideException` hérite de `RuntimeException`.
+
+Elle représente un refus lié aux règles métier, par exemple :
+
+- résoudre un ticket ouvert ;
+- reprendre en charge un ticket déjà résolu ;
+- affecter un technicien à un ticket résolu.
+
+Les données invalides fournies aux constructeurs ou à `assigner(null)` sont signalées avec `IllegalArgumentException`.
+
+Les contrôles sont réalisés avant toute modification afin qu'une opération refusée laisse le ticket inchangé.
+
+## Historique obligatoire
+
+Chaque ticket possède un historique constitué d'objets `Evenement`.
+
+Un événement contient l'action réalisée et l'état du ticket après cette action.
+
+Les actions tracées comprennent notamment :
+
+- la création du ticket ;
+- l'affectation d'un technicien ;
+- le changement de priorité ;
+- la prise en charge ;
+- la résolution.
+
+Une opération refusée ne doit pas ajouter d'événement.
+
+La consultation de l'historique ne permet pas de modifier directement la liste interne du ticket.
+
+## Diagramme de classes
 
 Voir [le diagramme de classes](docs/diagramme-classe.png).
 
-  Choix retenus et choix écarté
+## Choix retenus et choix écartés
 
-Classe abstraite retenue : Ticket. Un ticket générique est trop vaste en terme de possibilite  :on la categorise en incident ou une demande de service. Ticket porte tout l'état commun et le cycle de vie, et déclare delaiCibleHeures() abstraite parce que chaque type impose son propre délai (4 h pour un incident, 24 h pour une demande). Personne est abstraite pour que numero, nom et email ne soient écrits qu'une seule fois.
-Interface retenue: Assignable. Recevoir un technicien est une capacité, pas une famille d'objets. Aussi, elle est generalisable, par exemple un document different dun ticket peut etre assignable. L'interface contient seulement les trois methodes nécessaires : assigner, getTechnicien, estAssigne.
+### Classe abstraite `Ticket`
 
-Choix écarté : des transitions qui renvoient un boolean. Nous avons préféré lever une TransitionInvalideException afin de donner une cause explicite au refus. Ce choix concerne les transitions du ticket ; le catalogue conserve les retours boolean suggeres par le TD3 pour ajouter et retirer.
+Un ticket générique pouvant représenter plusieurs catégories, nous avons créé une classe abstraite `Ticket`.
 
-Autre choix : des associations par objets plutôt que par du texte. Un Ticket ne stocke pas le nom de son auteur sous forme de chaîne, il contient directement l'objet Utilisateur, l'objet Lieu et, après affectation, l'objet Technicien.
+Elle contient les informations et comportements communs.
 
-  Essais réalisés dans Main
+`TicketIncident` et `TicketDemandeService` ajoutent leurs caractéristiques propres.
 
-Essai	:Type	:Action	:Résultat attendu
-Polymorphisme:		parcourir un tableau Ticket[] contenant un incident et une demande:	délai cible 4 h puis 24 h
-1	:ordinaire	:assigner, prendre en charge puis résoudre un TicketIncident	:OUVERT, EN_COURS, RESOLU
-2	:limite	:résoudre un ticket jamais pris en charge	refus: état reste OUVERT
-3	:ordinaire	:cycle complet d'un TicketDemandeService, :affectation via une variable de type Assignable	EN_COURS puis RESOLU
-4	:limite	:reprendre en charge un ticket déjà résolu	:refus, état reste RESOLU
-5	:limite	:prendre en charge un ticket sans technicien	:refus, état reste OUVERT
+### Classe abstraite `Personne`
 
-6 : limite : assigner null à un ticket EN_COURS : IllegalArgumentException ; technicien et état conservés.
-7 : limite : affecter un autre technicien après résolution : TransitionInvalideException ; technicien initial et état RESOLU conservés.
-Ces deux nouveaux essais vérifient explicitement le refus et l'absence de modification ; ils arrêtent le programme avec AssertionError si le résultat est incorrect.
+`Personne` évite de répéter les attributs `numero`, `nom` et `email` dans `Utilisateur` et `Technicien`.
 
+### Interface `Assignable`
 
+Recevoir un technicien est considéré comme une capacité.
 
-Difficultés rencontrées
+L'interface contient :
 
-1.	Faire communiquer les classes entre elles. Résolu par les associations entre objets plutôt que par recopie de données.
-2.	Garantir que les états se succèdent dans le bon ordre. Résolu par une énumération EtatTicket et une condition sur l'état courant dans chaque méthode de transition.
-3.	Travailler à trois sur le même dépôt : une commande git pull collée par erreur dans Utilisateur.java a empêché la compilation au jalon 1. Nous compilons désormais avant chaque push et vérifions le dépôt sur un clone neuf.
-4. Un même humain jouant les deux rôles devrait aujourd'hui être représenté par deux objets distincts, que rien ne relie. Une version ultérieure utiliserait une classe Personne concrète portant un ou plusieurs rôles.
+```java
+assigner
+getTechnicien
+estAssigne
+```
 
-Questions pour la revue
+### Exceptions plutôt que booléens pour les transitions
 
-Peut-on modifier directement les données depuis Main ? Non. Tous les attributs sont privés, et ceux qui ne changent jamais sont final. Toute lecture passe par un getter, toute modification par une méthode de la classe (assigner, prendreEnCharge, resoudre).
+Les transitions interdites lèvent une `TransitionInvalideException`.
 
-Les constructeurs créent-ils des objets complets ? Oui. Chaque constructeur reçoit toutes les données obligatoires, valide numéros et textes, et refuse une valeur invalide. Un ticket naît toujours à l'état OUVERT, sans technicien.
+Cela permet de distinguer clairement un refus métier et d'en préciser la cause.
 
-Peut-on modifier l'état autrement qu'en utilisant les méthodes prévues ?
-Non. etat est privé et n'a pas de setter. Seules prendreEnCharge et resoudre le modifient.
+Les opérations du catalogue utilisent toutefois les booléens demandés dans le TD pour `ajouter` et `retirer`.
 
-Q. Les changements suivent-ils l'ordre demandé ? Oui. Dans l'essai 2, on appelle resoudre() sur un ticket jamais pris en charge : Main affiche le message de l'exception et l'état reste OUVERT.
+### Associations entre objets
 
-S1. Oui. TicketIncident extends Ticket et Technicien extends Personne : dans les deux cas on peut dire « est un ».
+Un ticket ne stocke pas le nom de son auteur ou de son lieu sous forme de texte.
 
-S2. Les attributs communs sont-ils écrits une seule fois ? Oui. Ceux des tickets sont déclarés dans Ticket, ceux des personnes dans Personne. Les sous classes ne déclarent que ce qu'elles ajoutent.
+Il contient directement des références vers :
 
-S3. Le programme principal utilise-t-il le type de la classe mère sans rechercher la classe réelle de l'objet ? Oui. Main déclare des variables de type Ticket, un tableau Ticket[] et une variable de type Assignable, et n'utilise aucun instanceof. Le délai cible affiché varie selon l'objet réel, pas selon le type déclaré.
+- un `Utilisateur` ;
+- un `Lieu` ;
+- éventuellement un `Technicien`.
 
-S4. Quand deux classes répètent les mêmes attributs, on les remonte dans une classe mère. Quand une capacité peut concerner des objets sans lien de parenté, on en fait une interface.
+## Polymorphisme
 
-Contributions
+`Main` manipule les deux catégories de tickets à travers le type abstrait `Ticket`.
 
-Membre :	Partie
-BAMAZI Yesuwaba Esther	: Modèle initial et encapsulation (jalon 1). Jalon 2 : compilation, constructeurs, nettoyage du dépôt, puis finalisation de Main, diagramme de classes et README
+Exemple :
 
-LOUE Rayan	: Interface Assignable, énumération EtatTicket, affectation et transitions d'état dans Ticket
+```java
+Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
-KABORE Cedric	Jalon 2 : premiers scénarios de Main (polymorphisme, scénario normal, deux refus)
+for (Ticket ticket : tickets) {
+    System.out.println(ticket);
+}
+```
 
-Le détail est visible dans l'historique des commits.
+Le délai cible affiché dépend automatiquement du type réel de l'objet.
 
-Recherches et usage de l'IA
-Sources consultées :
-.	supports de cours IIAA511 et fiches TD-TP 1 à 3, sections sur les invariants, l'héritage, le polymorphisme, les classes abstraites et les interfaces
-.	draw.io pour l'écriture des diagrammes de classes
-. stackoverflow pour comprendre la gestion des exceptions, les enums et les super
--https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/* en particulier pour les methodes des Collections 
-
-Esther a utilisé l'IA pour :
-
-se faire expliquer les notions du cours (encapsulation, classes abstraites, interfaces) et en faire des fiches utilisees lors de l'edition du code;
-comprendre les erreurs de compilation et d'exécution, les corrections ayant été faites par le groupe ;
-apprendre les commandes Git et le rôle du .gitignore ;
-vérifier la conformité du dépôt à la liste de vérification du professeur ;
-formater correctement en MD
-
+Aucun `instanceof` n'est nécessaire pour déterminer le type du ticket.
 
 ## Collections
 
 ### Catalogue et registre
 
-`Catalogue<T, K>` définit les cinq opérations communes : `ajouter`, `chercher`,
-`retirer`, `lister` et `taille`. `T` est le type des éléments et `K` le type des
-clés. 
+`Catalogue<T,K>` définit les opérations :
 
-`RegistreTicketsEnMemoire` implémente `Catalogue<Ticket, Integer>`. Son seul
-attribut est `private final Map<Integer, Ticket> tickets = new HashMap<>()`.
-`private` protège le stockage ; `final` empêche de remplacer la Map, mais permet
-de modifier son contenu par les méthodes du registre.
+```java
+ajouter
+chercher
+retirer
+lister
+taille
+```
 
-- `ajouter` refuse une clé ou un ticket nul, ainsi qu'une clé différente du
-  numéro du ticket, avec `IllegalArgumentException`. Une clé déjà présente
-  renvoie `false` sans remplacer l'objet initial ; un ajout réussi renvoie `true`.
-- `chercher` utilise `Optional.ofNullable` : le résultat contient le ticket ou
-  est vide si le numéro est absent. Une clé nulle lève `IllegalArgumentException`.
-- `retirer` renvoie `true` si un ticket est supprimé, sinon `false`. Une clé nulle
-  lève `IllegalArgumentException`.
-- `lister` utilise `List.copyOf` pour retourner une copie non modifiable.
-- `taille` renvoie le nombre de tickets enregistrés.
+`RegistreTicketsEnMemoire` implémente :
 
-### Comparaison et choix des structures
+```java
+Catalogue<Ticket, Integer>
+```
 
-| Structure | Doublons | Ordre garanti | Accès principal | Usage et choix dans le projet |
-| --- | --- | --- | --- | --- |
-| `ArrayList` | Éléments répétés autorisés | Ordre de la liste | Par indice ; parcours pour rechercher un numéro | Retenue pour les listes de résultats ; écartée comme stockage principal car la recherche par numéro est linéaire |
-| `LinkedHashSet` | Éléments égaux refusés | Ordre d'insertion | Test d'appartenance | Adapté à des étiquettes uniques ordonnées ; ce besoin ne fait pas partie du registre |
-| `HashSet` | Éléments égaux refusés | Aucun ordre garanti | Test d'appartenance | Permet de vérifier l'unicité des tickets avec equals et hashCode ; ne fournit pas de recherche directe par numéro |
-| `HashMap` | Clés uniques ; valeurs répétées possibles | Aucun ordre garanti | Par clé | Retenue pour retrouver les tickets par numéro, en temps moyen quasi constant avec un bon hachage |
-| `TreeMap` | Clés uniques ; valeurs répétées possibles | Clés triées | Par clé | Écartée : le registre n'exige pas de parcours trié par numéro ; recherche logarithmique |
+Son stockage principal est :
 
-Une Map remplace normalement la valeur lors d'un `put` sur une clé existante.
-Nous vérifions donc `containsKey` avant l'ajout pour appliquer notre règle de
-refus des doublons. Le tri des recherches porte sur une nouvelle liste ; il ne
-dépend pas de l'ordre de parcours de la HashMap.
+```java
+private final Map<Integer, Ticket> tickets = new HashMap<>();
+```
 
-### Identité des tickets
+Le numéro du ticket sert de clé.
 
-`Ticket.equals(Object o)` compare les numéros, même entre les deux catégories de
-tickets. `hashCode()` utilise `Objects.hash(numero)`. Deux tickets égaux ont ainsi
-le même code de hachage. `numero` est déclaré `private final int` : il ne change
-pas après la construction, donc le code de hachage reste stable même si l'état
-du ticket évolue.
+### Ajouter
 
-Dans `HashMap<Integer, Ticket>`, ce sont les clés Integer qui servent à rechercher
-les entrées ; equals et hashCode de Ticket définissent l'égalité métier et sont
-notamment utilisés par un `HashSet<Ticket>`.
+`ajouter` vérifie que :
 
-### Recherche par titre et regroupement par état
+- la clé n'est pas `null` ;
+- le ticket n'est pas `null` ;
+- la clé correspond au numéro du ticket.
 
-`rechercherParTitre` cherche une sous-chaîne  et renvoie
-une nouvelle liste triée par titre, puis par numéro en cas d'égalité des titres. Un mot-clé nul lève `IllegalArgumentException` ; une chaîne vide retrouve tous les tickets, et un mot absent donne une liste vide.
+Une clé déjà présente renvoie `false` sans remplacer le ticket existant.
 
-`regrouperParEtat` construit une nouvelle Map et de nouvelles listes avec
-`putIfAbsent`, puis `get(...).add(...)`. Seuls les états représentés ont un groupe ;
-un registre vide renvoie une Map vide. Ajouter ou supprimer des éléments dans
-les collections retournées ne change pas le registre. Les objets Ticket restent
-partagés : leurs méthodes peuvent modifier leur état.
+### Chercher
 
-## P6 — Essais du catalogue dans Main
+`chercher` utilise `Optional<Ticket>`.
 
-Les dix essais P6 sont écrits directement dans `main`, après les essais de
-transitions. Chacun affiche son nom, vérifie le résultat avec un `if` et lance
-`AssertionError` en cas d’échec. Le message `OK` est affiché après la vérification.
-Un échec arrête donc le programme.
+Le résultat contient le ticket s'il existe ou est vide si le numéro est absent.
+
+### Retirer
+
+`retirer` renvoie :
+
+- `true` si un ticket a été retiré ;
+- `false` si le numéro n'était pas présent.
+
+### Lister
+
+`lister` utilise `List.copyOf`.
+
+La liste retournée ne permet donc pas d'ajouter ou retirer directement des tickets du registre.
+
+## Comparaison des structures
+
+| Structure | Doublons | Ordre | Accès principal | Utilisation |
+|---|---|---|---|---|
+| `ArrayList` | autorisés | ordre de la liste | parcours | utilisée pour les résultats, pas comme stockage principal |
+| `LinkedHashSet` | refusés selon l'égalité | insertion | appartenance | non retenue |
+| `HashSet` | refusés selon l'égalité | aucun ordre garanti | appartenance | utile pour l'unicité mais pas pour la recherche par numéro |
+| `HashMap` | clés uniques | aucun ordre garanti | accès par clé | retenue comme stockage principal |
+| `TreeMap` | clés uniques | clés triées | accès par clé | tri par numéro non nécessaire |
+
+Une recherche par numéro dans une liste nécessite en général un parcours de complexité `O(n)`.
+
+L'accès par clé dans une `HashMap` est en moyenne de complexité `O(1)`.
+
+## Identité des tickets
+
+`Ticket.equals(Object o)` compare les numéros.
+
+`hashCode()` utilise également le numéro.
+
+Deux tickets portant le même numéro sont donc considérés comme égaux au niveau métier, même s'ils appartiennent à deux catégories différentes.
+
+Le numéro étant `final`, le code de hachage reste stable pendant toute la durée de vie du ticket.
+
+## Recherche par titre
+
+`rechercherParTitre` effectue une recherche de sous-chaîne sans distinction entre majuscules et minuscules.
+
+Elle retourne une nouvelle liste.
+
+Les résultats sont triés :
+
+1. par titre ;
+2. puis par numéro lorsque les titres sont équivalents.
+
+Un mot-clé `null` est refusé.
+
+Une recherche sans correspondance retourne une liste vide.
+
+## Regroupement par état
+
+`regrouperParEtat()` retourne une nouvelle Map contenant les trois états :
+
+- `OUVERT`
+- `EN_COURS`
+- `RESOLU`
+
+Chaque état est associé à une liste de tickets.
+
+Même lorsque le registre est vide, les trois clés sont présentes et associées à des listes vides.
+
+Modifier les listes ou la Map retournées ne modifie pas le registre.
+
+Les objets `Ticket` eux-mêmes restent cependant partagés.
+
+## Essais réalisés dans Main
+
+### Tests du Jalon 1
+
+Six essais vérifient les invariants :
+
+1. numéro du ticket inférieur ou égal à zéro ;
+2. titre vide ;
+3. priorité `null` ;
+4. auteur `null` ;
+5. email vide ;
+6. numéro du lieu inférieur ou égal à zéro.
+
+Les six essais affichent `REUSSI`.
+
+### Tests de priorité
+
+Les essais vérifient :
+
+- le refus d'une priorité `null` et la conservation de l'ancienne priorité ;
+- un changement valide vers `BASSE` ;
+- le refus d'un changement sur un ticket résolu ;
+- l'absence de modification de l'historique après le refus.
+
+### Tests des transitions
+
+Les scénarios vérifient notamment :
+
+- le cycle `OUVERT -> EN_COURS -> RESOLU` ;
+- la résolution d'un ticket jamais pris en charge ;
+- la reprise d'un ticket résolu ;
+- la prise en charge sans technicien ;
+- l'affectation de `null` ;
+- l'affectation après résolution.
+
+Les vérifications utilisent des conditions et affichent `REUSSI` ou `ECHEC`.
+
+## P6 : essais du catalogue
+
+Les dix essais P6 sont exécutés dans `Main`.
 
 | Essai | Action | Résultat attendu |
-| --- | --- | --- |
-| P6.1 | Consulter un registre vide | Taille 0 et liste vide |
+|---|---|---|
+| P6.1 | Consulter un registre vide | taille 0 et liste vide |
 | P6.2 | Ajouter un ticket | `true` et taille 1 |
-| P6.3 | Ajouter un autre objet avec le même numéro | `false`, taille inchangée et objet initial conservé |
-| P6.4 | Chercher un numéro présent | `Optional` contenant l'objet initial |
-| P6.5 | Chercher un numéro absent | `Optional` vide et taille inchangée |
-| P6.6 | Retirer un numéro présent | `true` et ticket absent du registre |
-| P6.7 | Retirer un numéro absent | `false` et taille inchangée |
-| P6.8 | Ajouter un ticket dans la liste retournée par `lister` | `UnsupportedOperationException` et registre inchangé |
-| P6.9 | Rechercher « PROBLEME » puis « probleme » | Le ticket « Probleme d’affichage » est retrouvé ; modifier la liste résultat ne modifie pas le registre |
-| P6.10 | Rechercher un mot absent | Liste vide et contenu du registre conservé |
+| P6.3 | Ajouter un doublon | `false`, ticket initial conservé |
+| P6.4 | Chercher un numéro présent | `Optional` contenant le ticket |
+| P6.5 | Chercher un numéro absent | `Optional` vide |
+| P6.6 | Retirer un numéro présent | `true` |
+| P6.7 | Retirer un numéro absent | `false`, registre inchangé |
+| P6.8 | Modifier la liste retournée | modification refusée, registre inchangé |
+| P6.9 | Rechercher `PROBLEME` puis `probleme` | même ticket retrouvé |
+| P6.10 | Rechercher un mot absent | liste vide |
 
+L'exécution actuelle affiche :
 
-## P7 — Comparaison des recherches
+```text
+P6 : 10 essais sur 10 reussis.
+```
 
-Main appelle `ComparaisonRecherche.executer`. La comparaison utilise une
-`ArrayList<Ticket>` et une `HashMap<Integer, Ticket>` contenant les mêmes
-10 000 objets. Les 1 000 numéros recherchés sont distincts, présents et répartis
-dans l'ensemble des tickets : 1, 11, 21, jusqu'à 9991.
+Des essais complémentaires portent sur :
 
-La création des objets est exclue du chronométrage. Après cinq passages de
-préparation, cinq mesures sont effectuées avec `System.nanoTime`, en alternant
-l'ordre de passage des structures. Aucun affichage n'est réalisé pendant les
-recherches. La somme des numéros retrouvés est vérifiée pour les deux structures :
-elle doit être égale à 4 996 000.
+- le tri ;
+- le regroupement par état ;
+- la protection des collections retournées ;
+- les arguments invalides.
 
-| Passage | Liste en ms | Map en ms |
-| --- | ---: | ---: |
-| 1 | 14,597 | 0,216 |
-| 2 | 14,884 | 0,522 |
-| 3 | 15,059 | 0,078 |
-| 4 | 15,018 | 0,097 |
-| 5 | 3,609 | 0,075 |
-| Moyenne | 12,633 | 0,198 |
+## P7 : comparaison des recherches
 
-Lors de cette exécution, la Map est plus rapide : elle retrouve chaque ticket
-par sa clé, tandis que la liste est parcourue jusqu'au numéro recherché. Une
-recherche dans la liste est linéaire O(n) ; l'accès par clé dans une HashMap est en
-moyenne quasi constant O(logn). 
+`ComparaisonRecherche.executer` construit :
 
+- une `ArrayList<Ticket>` ;
+- une `HashMap<Integer, Ticket>`.
 
-Pour l’exécution du tableau ci-dessus, les moyennes sont de **12,6 ms pour la liste contre 0,2 ms pour la Map**, soit environ **64 fois plus rapide** pour la Map (rapport calculé sur 12,633 et 0,198 ms avant arrondi). 
+Les deux structures contiennent les mêmes 10 000 tickets.
+
+1 000 numéros présents sont ensuite recherchés dans chaque structure.
+
+Les deux méthodes doivent retrouver les 1 000 tickets.
+
+La comparaison utilise `System.nanoTime()`.
+
+Les temps obtenus varient selon les exécutions, la JVM et la machine. Ils sont donc affichés à titre indicatif et ne sont pas enregistrés comme valeurs fixes dans cette documentation.
+
+Lors des essais, la `HashMap` est nettement plus rapide pour la recherche directe par numéro.
+
+## Difficultés rencontrées
+
+1. Faire communiquer les classes entre elles.  
+   Les associations entre objets ont été utilisées plutôt que la duplication des données.
+
+2. Garantir l'ordre des changements d'état.  
+   L'enum `EtatTicket` et les vérifications des méthodes métier contrôlent les transitions.
+
+3. Garantir l'atomicité.  
+   Les conditions sont vérifiées avant toute modification afin qu'une opération refusée laisse l'objet inchangé.
+
+4. Travailler à plusieurs sur le même dépôt.  
+   La compilation est vérifiée après les synchronisations et avant les principaux `push`.
+
+5. Gérer les fichiers générés par l'IDE.  
+   Les fichiers compilés ont été retirés du dépôt et le dossier correspondant est ignoré par Git.
+
+## Questions pour la revue
+
+### Peut-on modifier directement les données depuis Main ?
+
+Non.
+
+Les attributs sont privés.
+
+Les informations immuables ne possèdent pas de setter.
+
+Les autres modifications passent par les méthodes métier.
+
+### Les constructeurs créent-ils des objets complets ?
+
+Oui.
+
+Les constructeurs vérifient les informations obligatoires avant de créer l'objet.
+
+### Peut-on modifier directement l'état ?
+
+Non.
+
+`etat` est privé et ne possède pas de setter.
+
+Seules les méthodes prévues peuvent le faire évoluer.
+
+### Les changements suivent-ils l'ordre demandé ?
+
+Oui.
+
+Le cycle prévu est :
+
+```text
+OUVERT -> EN_COURS -> RESOLU
+```
+
+Une transition interdite provoque une `TransitionInvalideException`.
+
+### Où utilise-t-on l'héritage ?
+
+`Utilisateur` et `Technicien` héritent de `Personne`.
+
+`TicketIncident` et `TicketDemandeService` héritent de `Ticket`.
+
+### Où utilise-t-on le polymorphisme ?
+
+`Main` manipule les deux catégories de tickets avec des références de type `Ticket`.
+
+Le comportement dépend ensuite de l'objet réel.
+
+### Quand choisir une classe abstraite ou une interface ?
+
+Une classe abstraite est utilisée lorsque plusieurs classes partagent des données et comportements communs.
+
+Une interface est utilisée pour représenter une capacité pouvant être implémentée par différentes classes.
+
+## Contributions
+
+| Membre | Contribution |
+|---|---|
+| **BAMAZI Yesuwaba Esther** | Modèle initial et encapsulation ; compilation, constructeurs et nettoyage ; gestion de la priorité ; finalisation et validation de `Main` ; registre et collections ; diagramme et documentation |
+| **LOUE Rayan** | Interface `Assignable`, enum `EtatTicket`, affectation et transitions d'état |
+| **KABORE Cedric** | Premiers scénarios de `Main` et essais des invariants |
+
+Le détail des contributions est également visible dans l'historique Git.
+
+## Recherches et usage de l'IA
+
+Sources utilisées :
+
+- supports de cours IIAA511 ;
+- fiches TD/TP ;
+- documentation Java ;
+- Stack Overflow pour certaines questions techniques ;
+- draw.io pour le diagramme de classes.
+
+L'intelligence artificielle a été utilisée comme outil d'assistance pour :
+
+- expliquer certaines notions du cours ;
+- comprendre des erreurs de compilation ou d'exécution ;
+- apprendre certaines commandes Git ;
+- relire et restructurer la documentation ;
+  
+
+Les corrections et choix retenus ont ensuite été vérifiés dans le projet.
