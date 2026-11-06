@@ -148,19 +148,18 @@ Deux tickets portant le même numéro ne peuvent pas être enregistrés simultan
 
 Une opération de consultation ne doit pas permettre de modifier directement le contenu du registre.
 
-### RG10 : historique obligatoire
 
-Chaque ticket doit conserver une trace des principales actions réalisées au cours de son traitement.
+### RG10 : Historique obligatoire
 
-L’historique doit notamment pouvoir représenter :
+Chaque ticket doit conserver les principales actions réalisées au cours de son traitement, dans leur ordre d'enregistrement.
 
-- la création ;
-- l’affectation ;
-- le changement de priorité ;
-- la prise en charge ;
-- la résolution.
+Les actions tracées comprennent la création, l'affectation d'un technicien, le changement de priorité, la prise en charge et la résolution.
 
-Une opération refusée ne doit pas ajouter d’événement à l’historique.
+Toute opération métier réussie parmi ces actions doit produire une trace correspondante. Une opération refusée ne doit modifier ni les informations du ticket ni son historique.
+
+L'historique doit pouvoir être consulté sans permettre la modification ou la suppression directe des événements enregistrés.
+
+Cette contrainte complémentaire devra être organisée de manière à séparer les responsabilités de traçabilité des règles essentielles du noyau métier.
 
 ## 7. Délais cibles
 

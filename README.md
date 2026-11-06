@@ -563,15 +563,15 @@ Une classe abstraite est utilisée lorsque plusieurs classes partagent des donn�
 
 Une interface est utilisée pour représenter une capacité pouvant être implémentée par différentes classes.
 
-## Contributions
+## Contributions du groupe
 
-| Membre | Contribution |
+| Membre | Contributions |
 |---|---|
-| **BAMAZI Yesuwaba Esther** | Modèle initial et encapsulation ; compilation, constructeurs et nettoyage ; gestion de la priorité ; finalisation et validation de `Main` ; registre et collections ; diagramme et documentation |
-| **LOUE Rayan** | Interface `Assignable`, enum `EtatTicket`, affectation et transitions d'état |
-| **KABORE Cedric** | Premiers scénarios de `Main` et essais des invariants |
+| **BAMAZI Yesuwaba Esther** | Conception initiale et encapsulation ; intégration et finalisation du Jalon 2 ; vérification de l'héritage, de la composition et du polymorphisme ; développement et vérification des mécanismes d'historique ; ajout des essais de polymorphisme via des références `Ticket` ; correction et validation des tests manuels ; actualisation du cahier des charges, du rapport, du README et des synthèses ; compilation, vérification du dépôt et préparation de la remise Git. |
+| **LOUE Rayan** | Développement initial de l'interface `Assignable`, de l'énumération `EtatTicket` et des méthodes d'affectation et de transition du modèle. |
+| **KABORE Cedric** | Développement des premiers scénarios de démonstration dans `Main`, notamment les transitions, les refus et les essais des invariants de construction. |
 
-Le détail des contributions est également visible dans l'historique Git.
+Le Jalon 2 a principalement été finalisé et vérifié par BAMAZI Yesuwaba Esther, à partir du travail collectif réalisé lors des étapes précédentes.
 
 ## Recherches et usage de l'IA
 
@@ -591,4 +591,4 @@ L'intelligence artificielle a été utilisée comme outil d'assistance pour :
 - relire et restructurer la documentation ;
   
 
-Les corrections et choix retenus ont ensuite été vérifiés dans le projet.
+

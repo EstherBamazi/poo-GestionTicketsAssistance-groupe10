@@ -33,6 +33,6 @@ public class Lieu {
 
     @Override
     public String toString(){
-        return nom + "," + batiment;
+        return nom + ", " + batiment;
     }
 }

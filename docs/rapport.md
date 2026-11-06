@@ -94,26 +94,21 @@ La méthode `changerPriorite()` vérifie notamment que la nouvelle priorité n�
 
 Elle refuse également toute modification sur un ticket déjà résolu.
 
-## 6. Historique
+## 6. Historique et composition
 
-La contrainte complémentaire retenue est l’**historique obligatoire**.
+La contrainte complémentaire retenue par le groupe est l'historique obligatoire.
 
-Chaque ticket possède une liste d’événements.
+La première implémentation repose sur une composition entre un ticket et une liste d'objets `Evenement`. Chaque événement contient une action et l'état obtenu après cette action.
 
-Un `Evenement` représente une action réalisée sur le ticket ainsi que son état après cette action.
+Une `ArrayList` a été retenue parce qu'elle conserve l'ordre d'ajout des événements. La méthode `getHistorique()` utilise `List.copyOf()` pour permettre leur consultation sans exposer une liste modifiable.
 
-L’historique permet actuellement de tracer notamment :
+Les opérations actuellement tracées sont la création, l'affectation d'un technicien, le changement de priorité, la prise en charge et la résolution.
 
-- la création ;
-- l’affectation ;
-- le changement de priorité ;
-- la prise en charge ;
-- la résolution.
+Les vérifications métier sont effectuées avant toute modification. Les essais montrent notamment que les tentatives de modification d'un ticket résolu ne produisent pas de nouvel événement.
 
-La consultation de l’historique ne permet pas de modifier directement sa liste interne.
+Cette implémentation est déjà fonctionnelle pour les scénarios réalisés, mais l'enregistrement des événements est encore directement intégré à la classe `Ticket`.
 
-Les événements sont ajoutés après validation de l’opération. Une action refusée ne modifie donc pas l’historique.
-
+Une évolution prévue pour la finalisation de la contrainte consiste donc à isoler la responsabilité de traçabilité du noyau métier et à renforcer les essais d'atomicité, afin de garantir la cohérence entre les opérations réussies et les événements conservés.
 ## 7. Identité métier
 
 Deux tickets sont considérés comme identiques lorsqu’ils possèdent le même numéro.
@@ -168,7 +163,7 @@ La `HashMap` a été retenue car le besoin principal est de retrouver rapidement
 
 Le registre ne renvoie pas directement sa structure interne.
 
-La méthode `lister()` retourne une vue protégée des tickets afin que le code appelant ne puisse pas ajouter ou retirer directement des éléments du registre.
+La méthode `lister()` retourne une copie non modifiable des tickets (`List.copyOf`) afin que le code appelant ne puisse pas ajouter ou retirer directement des éléments du registre.
 
 Les recherches et regroupements construisent également des collections distinctes du stockage principal.
 

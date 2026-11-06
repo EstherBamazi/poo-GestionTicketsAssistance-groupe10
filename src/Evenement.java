@@ -6,13 +6,13 @@ public class Evenement {
     public Evenement(String action, EtatTicket etatApres) {
         if (action == null || action.isBlank()) {
             throw new IllegalArgumentException(
-                    "L'action doit être renseignée"
+                    "L'action doit etre renseignee"
             );
         }
 
         if (etatApres == null) {
             throw new IllegalArgumentException(
-                    "L'état doit être renseigné"
+                    "L'etat doit etre renseigne"
             );
         }
 

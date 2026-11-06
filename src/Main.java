@@ -7,10 +7,9 @@ public class Main {
     public static void main(String[] args) {
         testerInvariants();
 
-        // --- Creation des objets de base ---
         Lieu salleB65 = new Lieu(65, "salleB6.5(Projet Java)", "Batiment Principal");
         Lieu salleB67 = new Lieu(67, "salleB6.7(Projet Python)", "Batiment Principal");
-        Lieu chambre14 = new Lieu(14, "chambre14(dortoir)", "Residance Campus Filles");
+        Lieu chambre14 = new Lieu(14, "chambre14(dortoir)", "Residence Campus Filles");
 
         Utilisateur sidibe = new Utilisateur(56, "Sidibe", "sidibe@2IE.bf");
         Utilisateur bernadette = new Utilisateur(75, "Bernadette", "bernadette@2IE.bf");
@@ -27,9 +26,19 @@ public class Main {
                 "Le wifi ne fonctionne plus dans le batiment B", Priorite.MOYENNE,
                 bernadette, salleB67, "Reparation reseau Wifi");
 
-        // ==========================================
-        // Tests pour changerPriorite
-        // ==========================================
+        Ticket[] tickets = {ticketSidibe, ticketBernadette};
+
+        System.out.println("=== Polymorphisme : delai cible via Ticket ===");
+        verifierCondition(
+                "Incident via Ticket : delai 4h",
+                tickets[0].delaiCibleHeures() == 4
+        );
+
+        verifierCondition(
+                "Demande via Ticket : delai 24h",
+                tickets[1].delaiCibleHeures() == 24
+        );
+
         System.out.println("=== Tests pour changerPriorite ===");
 
         Ticket ticketTest = new TicketIncident(107, "Probleme de plomberie",
@@ -40,7 +49,7 @@ public class Main {
 
         Priorite prioriteAvant = ticketTest.getPriorite();
         boolean prioriteNulleRefusee = false;
-
+        List<Evenement> historiqueAvantRefus = ticketTest.getHistorique();
         try {
             ticketTest.changerPriorite(null);
         } catch (IllegalArgumentException e) {
@@ -52,7 +61,6 @@ public class Main {
                 "priorite null refusee et priorite inchangee",
                 prioriteNulleRefusee && ticketTest.getPriorite() == prioriteAvant
         );
-
         ticketTest.changerPriorite(Priorite.BASSE);
         verifierCondition(
                 "changement valide de priorite vers BASSE",
@@ -79,20 +87,13 @@ public class Main {
         );
         System.out.println();
 
-        // ==========================================
-        // a) Polymorphisme
-        // ==========================================
         System.out.println("=== a. Demonstration du polymorphisme ===");
-        Ticket[] tickets = {ticketSidibe, ticketBernadette};
 
         for (Ticket ticket : tickets) {
             System.out.println(ticket);
         }
         System.out.println();
 
-        // ==========================================
-        // b) Scenario normal
-        // ==========================================
         System.out.println("=== b. Scenario normal ===");
         System.out.println("Etat initial : " + ticketSidibe.getEtat());
 
@@ -118,9 +119,6 @@ public class Main {
         );
         System.out.println();
 
-        // ==========================================
-        // c) Cas de refus et limites
-        // ==========================================
         System.out.println("=== c1. Resolution sur un ticket non pris en charge ===");
         EtatTicket etatAvantRefus = ticketBernadette.getEtat();
         boolean resolutionRefusee = false;
@@ -227,9 +225,6 @@ public class Main {
                         && ticketSansTechnicien.getHistorique().size() == historiqueAvantAffectationRefusee
         );
 
-        // ==========================================
-        // P6 : essais du registre
-        // ==========================================
         System.out.println("\n=== P6 : essais du registre ===");
         RegistreTicketsEnMemoire registre = new RegistreTicketsEnMemoire();
         int essaisRegistreReussis = 0;
@@ -327,9 +322,6 @@ public class Main {
 
         System.out.println("P6 : " + essaisRegistreReussis + " essais sur 10 reussis.");
 
-        // ==========================================
-        // Recherche triee et regroupement par etat
-        // ==========================================
         Ticket enCours = new TicketIncident(104, "Probleme clavier", "Clavier bloque",
                 Priorite.MOYENNE, sidibe, salleB65, "Clavier");
         enCours.assigner(superBob);
@@ -351,7 +343,7 @@ public class Main {
                 tries.equals(List.of(enCours, ouvertBis, ticketSidibe))
         );
 
-        System.out.println("\n=== P5 : regroupement par etat ===");
+        System.out.println("\n=== Regroupement par etat ===");
         Map<EtatTicket, List<Ticket>> groupes = registre.regrouperParEtat();
         System.out.println(groupes);
 
@@ -416,16 +408,12 @@ public class Main {
         ComparaisonRecherche.executer(sidibe, salleB65);
     }
 
-    // ==================================================
-    // TESTS DU JALON 1 : MODELE ET INVARIANTS
-    // ==================================================
     public static void testerInvariants() {
         System.out.println("\n===== TESTS DU JALON 1 =====");
 
         Utilisateur mariam = new Utilisateur(900, "Mariam", "mariam@2IE.bf");
         Lieu salleC2 = new Lieu(900, "salleC2", "Batiment Principal");
 
-        // Test 1 : numero du ticket <= 0
         try {
             new TicketIncident(
                     0, "Probleme de climatisation", "La clim ne fonctionne pas",
@@ -436,7 +424,6 @@ public class Main {
             System.out.println("REUSSI : numero du ticket <= 0 refuse");
         }
 
-        // Test 2 : titre vide
         try {
             new TicketIncident(
                     901, "   ", "La clim ne fonctionne pas",
@@ -447,7 +434,6 @@ public class Main {
             System.out.println("REUSSI : titre vide refuse");
         }
 
-        // Test 3 : priorite null
         try {
             new TicketIncident(
                     902, "Probleme de climatisation", "La clim ne fonctionne pas",
@@ -458,7 +444,6 @@ public class Main {
             System.out.println("REUSSI : priorite null refusee");
         }
 
-        // Test 4 : auteur null
         try {
             new TicketIncident(
                     903, "Probleme", "Description valide",
@@ -469,7 +454,6 @@ public class Main {
             System.out.println("REUSSI : auteur null refuse");
         }
 
-        // Test 5 : email vide
         try {
             new Utilisateur(905, "Mariam", "   ");
             System.out.println("ECHEC : email vide accepte");
@@ -477,7 +461,6 @@ public class Main {
             System.out.println("REUSSI : email vide refuse");
         }
 
-        // Test 6 : numero du lieu <= 0
         try {
             new Lieu(0, "SalleC2", "Batiment Principal");
             System.out.println("ECHEC : numero du lieu <= 0 accepte");
@@ -488,8 +471,6 @@ public class Main {
         System.out.println("===== FIN DES TESTS =====\n");
     }
 
-    // Petite methode de verification pour les tests manuels.
-    // Elle utilise seulement un booleen et un if/else.
     private static boolean verifierCondition(String nomTest, boolean condition) {
         if (condition) {
             System.out.println("REUSSI : " + nomTest);

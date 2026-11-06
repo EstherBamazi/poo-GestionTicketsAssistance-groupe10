@@ -28,7 +28,7 @@ public abstract class Ticket implements Assignable {
             throw new IllegalArgumentException("La priorite doit etre renseignee");
         }
         if (auteur == null || lieu == null) {
-            throw new IllegalArgumentException("auteur et lieu sont obligatoires");
+            throw new IllegalArgumentException("L'auteur et le lieu sont obligatoires");
         }
 
         this.numero = numero;
@@ -95,12 +95,12 @@ public abstract class Ticket implements Assignable {
     @Override
     public void assigner(Technicien technicien) {
         if (technicien == null) {
-            throw new IllegalArgumentException("Le technicien ne doit pas etre null.");
+            throw new IllegalArgumentException("Le technicien ne doit pas etre null");
         }
 
         if (this.etat == EtatTicket.RESOLU) {
             throw new TransitionInvalideException(
-                    "Impossible d'assigner un technicien a un ticket deja resolu."
+                    "Impossible d'assigner un technicien a un ticket deja resolu"
             );
         }
 
@@ -114,7 +114,7 @@ public abstract class Ticket implements Assignable {
     public void resoudre() {
         if (etat != EtatTicket.EN_COURS) {
             throw new TransitionInvalideException(
-                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ")."
+                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ")"
             );
         }
 
@@ -135,13 +135,13 @@ public abstract class Ticket implements Assignable {
     public void prendreEnCharge() {
         if (etat != EtatTicket.OUVERT) {
             throw new TransitionInvalideException(
-                    "Impossible de prendre en charge un ticket qui n'est pas OUVERT (etat actuel : " + etat + ")."
+                    "Impossible de prendre en charge un ticket qui n'est pas OUVERT (etat actuel : " + etat + ")"
             );
         }
 
         if (!estAssigne()) {
             throw new TransitionInvalideException(
-                    "Impossible de prendre en charge un ticket sans technicien assigne."
+                    "Impossible de prendre en charge un ticket sans technicien assigne"
             );
         }
 
