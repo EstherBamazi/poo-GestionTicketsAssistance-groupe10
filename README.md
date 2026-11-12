@@ -350,6 +350,11 @@ Le résultat contient le ticket s'il existe ou est vide si le numéro est absent
 
 La liste retournée ne permet donc pas d'ajouter ou retirer directement des tickets du registre.
 
+### L'interface `DepotTickets` et l'utilisation d'EnumMap
+
+- **`DepotTickets`** : Cette interface étend `Catalogue<Ticket, Integer>` afin de spécialiser les opérations de stockage et de recherche spécifiquement aux tickets d'assistance et à leurs clés entières.
+- **`EnumMap`** : Utilisée pour optimiser le regroupement des tickets par état (`EtatTicket`). Les clés étant des énumérations (`OUVERT`, `EN_COURS`, `RESOLU`), l'utilisation d'un `EnumMap` garantit des performances optimales et un ordre cohérent.
+
 ## Comparaison des structures
 
 | Structure | Doublons | Ordre | Accès principal | Utilisation |
