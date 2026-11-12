@@ -80,6 +80,7 @@ Ce cas est représenté par :
 | `RegistreTicketsEnMemoire` | Stockage et recherche des tickets en mémoire |
 | `ComparaisonRecherche` | Comparaison de la recherche dans une liste et une Map |
 | `Main` | Démonstration du fonctionnement et essais |
+| `DepotTickets` | Interface spécifique étendant `Catalogue<Ticket, Integer>` pour la gestion des tickets |
 
 ## Attributs et visibilité
 
