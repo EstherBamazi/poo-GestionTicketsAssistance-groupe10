@@ -5,7 +5,7 @@ public class TicketIncident extends Ticket {
                           Utilisateur auteur, Lieu lieu, String equipementConcerne) {
         super(numero, titre, description, priorite, auteur, lieu);
         if (equipementConcerne==null || equipementConcerne.isBlank()){
-            throw new IllegalArgumentException("L'equipement ne doit pas etre vide");
+            throw new IllegalArgumentException("L'équipement ne doit pas être vide");
         }
         this.equipementConcerne = equipementConcerne;
     }
@@ -21,6 +21,6 @@ public class TicketIncident extends Ticket {
 
     @Override
     public String toString() {
-        return super.toString() + " | equipement : " + equipementConcerne;
+        return super.toString() + " | équipement : " + equipementConcerne;
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
+public class RegistreTicketsEnMemoire implements DepotTicket {
 
     private final Map<Integer, Ticket> tickets = new HashMap<>();
 
@@ -100,4 +100,47 @@ public class RegistreTicketsEnMemoire implements Catalogue<Ticket, Integer> {
 
         return groupes;
     }
+
+
+    @Override
+    public List<Ticket> rechercherParEtat(EtatTicket etat) {
+        if (etat == null) {
+            throw new IllegalArgumentException(
+                    "L'etat ne peut pas etre nul"
+            );
+        }
+
+        List<Ticket> resultat = new ArrayList<>();
+
+        for (Ticket ticket : tickets.values()) {
+            if (ticket.getEtat() == etat) {
+                resultat.add(ticket);
+            }
+        }
+
+        return List.copyOf(resultat);
+    }
+
+
+
+
+    @Override
+    public List<Ticket> rechercherParPriorite(Priorite priorite) {
+        if (priorite == null) {
+            throw new IllegalArgumentException(
+                    "La priorite ne peut pas etre nulle"
+            );
+        }
+
+        List<Ticket> resultat = new ArrayList<>();
+
+        for (Ticket ticket : tickets.values()) {
+            if (ticket.getPriorite() == priorite) {
+                resultat.add(ticket);
+            }
+        }
+
+        return List.copyOf(resultat);
+    }
+
 }

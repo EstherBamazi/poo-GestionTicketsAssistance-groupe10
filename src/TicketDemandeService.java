@@ -5,7 +5,7 @@ public class TicketDemandeService extends Ticket {
                                 Utilisateur auteur, Lieu lieu, String serviceDemande) {
         super(numero, titre, description, priorite, auteur, lieu);
         if (serviceDemande == null || serviceDemande.isBlank()){
-            throw new IllegalArgumentException("Le service demande ne doit pas etre vide");
+            throw new IllegalArgumentException("Le service demande ne doit pas être vide");
         }
         this.serviceDemande = serviceDemande;
     }

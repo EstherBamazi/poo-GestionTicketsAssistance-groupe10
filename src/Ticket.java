@@ -16,16 +16,16 @@ public abstract class Ticket implements Assignable {
     public Ticket(int numero, String titre, String description, Priorite priorite,
                   Utilisateur auteur, Lieu lieu) {
         if (numero <= 0) {
-            throw new IllegalArgumentException("Le numero doit etre positif");
+            throw new IllegalArgumentException("Le numero doit être positif");
         }
         if (titre == null || titre.isBlank()) {
-            throw new IllegalArgumentException("Le titre ne doit pas etre vide");
+            throw new IllegalArgumentException("Le titre ne doit pas être vide");
         }
         if (description == null || description.isBlank()) {
-            throw new IllegalArgumentException("La description ne doit pas etre vide");
+            throw new IllegalArgumentException("La description ne doit pas être vide");
         }
         if (priorite == null) {
-            throw new IllegalArgumentException("La priorite doit etre renseignee");
+            throw new IllegalArgumentException("La priorité doit être renseignée");
         }
         if (auteur == null || lieu == null) {
             throw new IllegalArgumentException("L'auteur et le lieu sont obligatoires");
@@ -104,6 +104,7 @@ public abstract class Ticket implements Assignable {
             );
         }
 
+        //Attention: assigner() remplace le technicien en silence si le ticket est déjà assigné ou EN_COURS.
         this.technicien = technicien;
         historique.add(new Evenement(
                 "Affectation du technicien " + technicien.getNom(),
@@ -114,7 +115,7 @@ public abstract class Ticket implements Assignable {
     public void resoudre() {
         if (etat != EtatTicket.EN_COURS) {
             throw new TransitionInvalideException(
-                    "Impossible de resoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ")"
+                    "Impossible de résoudre un ticket qui n'est pas EN_COURS (etat actuel : " + etat + ")"
             );
         }
 
@@ -135,7 +136,7 @@ public abstract class Ticket implements Assignable {
     public void prendreEnCharge() {
         if (etat != EtatTicket.OUVERT) {
             throw new TransitionInvalideException(
-                    "Impossible de prendre en charge un ticket qui n'est pas OUVERT (etat actuel : " + etat + ")"
+                    "Impossible de prendre en charge un ticket qui n'est pas OUVERT (état actuel : " + etat + ")"
             );
         }
 

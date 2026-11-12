@@ -471,6 +471,40 @@ Des essais complémentaires portent sur :
 - la protection des collections retournées ;
 - les arguments invalides.
 
+### Choix de conception : Généricité de l'interface Catalogue
+
+L'interface `Catalogue<T, K>` a été conçue de manière générique afin de pouvoir être réutilisée avec différents types d'objets, conformément au principe de généricité étudié en cours.
+
+- `T` représente le type d'objet stocké dans le catalogue.
+- `K` représente le type de clé utilisé pour identifier cet objet.
+
+Cette conception évite de créer une interface différente pour chaque type d'objet. Elle permet de réutiliser les mêmes opérations (`ajouter`, `chercher`, `retirer`, `lister` et `taille`) avec plusieurs types de données.
+
+Dans notre projet, l'interface est spécialisée par l'implémentation suivante :
+
+```java
+public class RegistreTicketsEnMemoire
+        implements Catalogue<Ticket, Integer>
+```
+
+Cela signifie que :
+- `T = Ticket`
+- `K = Integer`
+
+Le registre stocke donc des tickets identifiés par des numéros entiers.
+
+### Choix de conception : utilisation de Optional
+
+La méthode `chercher()` retourne un `Optional<T>` plutôt que directement un objet `T`.
+
+Ce choix permet de représenter explicitement deux situations :
+- L'objet recherché existe : l'Optional contient cet objet.
+- L'objet recherché n'existe pas : l'Optional est vide.
+
+Dans notre implémentation, `Optional.ofNullable(tickets.get(cle))` permet d'encapsuler le résultat de la recherche dans la collection `Map`, y compris lorsque celle-ci retourne `null`.
+
+Ce choix évite de retourner directement une référence potentiellement nulle et oblige le code appelant à tenir compte de l'absence éventuelle de l'objet.
+
 ## P7 : comparaison des recherches
 
 `ComparaisonRecherche.executer` construit :
@@ -589,6 +623,7 @@ L'intelligence artificielle a été utilisée comme outil d'assistance pour :
 - comprendre des erreurs de compilation ou d'exécution ;
 - apprendre certaines commandes Git ;
 - relire et restructurer la documentation ;
+- Comprendre la nuance entre l'utilisation de la bibliotheque Optionnal plutot que les outils de la collections map
   
 
 

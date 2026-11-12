@@ -5,13 +5,13 @@ public abstract class Personne {
 
     public Personne (int numero, String nom, String email){
         if (numero<=0){
-            throw new IllegalArgumentException("Le numero doit etre positif");
+            throw new IllegalArgumentException("Le numero doit être positif");
         }
         if (nom==null || nom.isBlank()){
-            throw new IllegalArgumentException("Le nom ne peut pas etre vide");
+            throw new IllegalArgumentException("Le nom ne peut pas être vide");
         }
         if (email==null || email.isBlank()){
-            throw new IllegalArgumentException("L'adresse electronique ne peut pas etre vide");
+            throw new IllegalArgumentException("L'adresse électronique ne peut pas être vide");
         }
         this.numero=numero;
         this.nom=nom;

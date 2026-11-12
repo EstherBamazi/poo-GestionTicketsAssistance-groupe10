@@ -6,13 +6,13 @@ public class Lieu {
 
     public Lieu(int numero, String nom, String batiment) {
         if (numero <=0){
-            throw new IllegalArgumentException("Le numero doit etre positif");
+            throw new IllegalArgumentException("Le numero doit être positif");
         }
         if (nom == null || nom.isBlank()){
-            throw new IllegalArgumentException("Le nom ne peut pas etre vide");
+            throw new IllegalArgumentException("Le nom ne peut pas être vide");
         }
         if (batiment == null || batiment.isBlank()){
-            throw new IllegalArgumentException("Le batiment ne peut pas etre vide");
+            throw new IllegalArgumentException("Le bâtiment ne peut pas être vide");
         }
         this.numero = numero;
         this.nom = nom;
