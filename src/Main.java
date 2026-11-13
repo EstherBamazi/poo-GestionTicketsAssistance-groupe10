@@ -411,7 +411,7 @@ verifierCondition(
 
         //  Recherche par etat avec resultat =====
 
-System.out.println("\n=== TEST 6 : Recherche par etat avec resultat ===");
+System.out.println("\n===  Recherche par etat avec resultat ===");
 
 List<Ticket> ticketsOuverts = registre.rechercherParEtat(EtatTicket.OUVERT);
 
@@ -423,7 +423,7 @@ verifierCondition(
 
 // =====  Recherche par priorite sans resultat =====
 
-System.out.println("\n=== TEST 7 : Recherche par priorite sans resultat ===");
+System.out.println("\n===  Recherche par priorite sans resultat ===");
 
 RegistreTicketsEnMemoire registreVide = new RegistreTicketsEnMemoire();
 
