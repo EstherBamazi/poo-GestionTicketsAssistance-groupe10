@@ -15,7 +15,7 @@ Dans IntelliJ IDEA : ouvrir le projet puis exécuter la classe `Main`.
 En ligne de commande, depuis la racine du dépôt :
 
 ```bash
-javac -d out src/*.java
+javac -encoding UTF-8 -d out src/*.java
 java -cp out Main
 ```
 
@@ -393,6 +393,18 @@ Les résultats sont triés :
 Un mot-clé `null` est refusé.
 
 Une recherche sans correspondance retourne une liste vide.
+
+### Recherche par état et par priorité
+
+- **`rechercherParEtat(EtatTicket etat)`** : 
+  - Un argument `null` est refusé.
+  - Retourne une **nouvelle liste** de tickets filtrée par l'état demandé.
+  - Si aucun ticket ne correspond, retourne une **liste vide**.
+
+- **`rechercherParPriorite(Priorite priorite)`** :
+  - Un argument `null` est refusé.
+  - Retourne une **nouvelle liste** de tickets filtrée par la priorité demandée.
+  - Si aucun ticket ne correspond, retourne une **liste vide**.
 
 ## Regroupement par état
 
