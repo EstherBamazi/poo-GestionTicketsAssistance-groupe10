@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
 
@@ -27,7 +29,58 @@ public class Main {
                 bernadette, salleB67, "Reparation reseau Wifi");
 
         Ticket[] tickets = {ticketSidibe, ticketBernadette};
+        
+       System.out.println("\n=== equals retourne true ===");
 
+Ticket t1 = new TicketIncident(
+        201, "Probleme ecran", "Description 1",
+        Priorite.HAUTE, sidibe, salleB65, "Ecran"
+);
+
+Ticket t2 = new TicketIncident(
+        201, "Probleme clavier", "Description 2",
+        Priorite.BASSE, sidibe, salleB65, "Clavier"
+);
+
+verifierCondition(
+        "deux tickets de meme numero sont egaux",
+        t1.equals(t2)
+);
+        System.out.println("\n===  equals et hashCode ===");
+
+verifierCondition(
+        "deux tickets egaux ont le meme hashCode",
+        t1.equals(t2) && t1.hashCode() == t2.hashCode()
+);
+        System.out.println("\n=== equals retourne false ===");
+
+Ticket t3 = new TicketIncident(
+        202, "Probleme souris", "Description 3",
+        Priorite.MOYENNE, sidibe, salleB65, "Souris"
+);
+
+verifierCondition(
+        "deux tickets de numeros differents ne sont pas egaux",
+        !t1.equals(t3)
+);
+        System.out.println("\n=== equals(null) ===");
+
+verifierCondition(
+        "equals(null) retourne false",
+        !t1.equals(null)
+);
+        System.out.println("\n===  HashSet ===");
+
+Set<Ticket> ensembleTickets = new HashSet<>();
+
+boolean ajout1 = ensembleTickets.add(t1);
+boolean ajout2 = ensembleTickets.add(t2);
+
+verifierCondition(
+        "HashSet ne conserve pas les doublons",
+        ajout1 && !ajout2 && ensembleTickets.size() == 1
+);
+        
         System.out.println("=== Polymorphisme : delai cible via Ticket ===");
         verifierCondition(
                 "Incident via Ticket : delai 4h",
@@ -355,6 +408,32 @@ public class Main {
                         && groupes.get(EtatTicket.OUVERT).size() == 2
                         && groupes.get(EtatTicket.OUVERT).containsAll(List.of(ouvert, ouvertBis))
         );
+
+        //  Recherche par etat avec resultat =====
+
+System.out.println("\n===  Recherche par etat avec resultat ===");
+
+List<Ticket> ticketsOuverts = registre.rechercherParEtat(EtatTicket.OUVERT);
+
+verifierCondition(
+        "recherche par etat avec resultat",
+        ticketsOuverts.size() == 2
+);
+
+
+// =====  Recherche par priorite sans resultat =====
+
+System.out.println("\n===  Recherche par priorite sans resultat ===");
+
+RegistreTicketsEnMemoire registreVide = new RegistreTicketsEnMemoire();
+
+List<Ticket> ticketsHaute =
+        registreVide.rechercherParPriorite(Priorite.HAUTE);
+
+verifierCondition(
+        "recherche par priorite sans resultat",
+        ticketsHaute.isEmpty()
+);
 
         groupes.get(EtatTicket.OUVERT).clear();
         groupes.clear();

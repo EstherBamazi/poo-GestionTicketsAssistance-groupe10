@@ -15,7 +15,7 @@ Dans IntelliJ IDEA : ouvrir le projet puis exécuter la classe `Main`.
 En ligne de commande, depuis la racine du dépôt :
 
 ```bash
-javac -d out src/*.java
+javac -encoding UTF-8 -d out src/*.java
 java -cp out Main
 ```
 
@@ -80,6 +80,7 @@ Ce cas est représenté par :
 | `RegistreTicketsEnMemoire` | Stockage et recherche des tickets en mémoire |
 | `ComparaisonRecherche` | Comparaison de la recherche dans une liste et une Map |
 | `Main` | Démonstration du fonctionnement et essais |
+| `DepotTickets` | Interface spécifique étendant `Catalogue<Ticket, Integer>` pour la gestion des tickets |
 
 ## Attributs et visibilité
 
@@ -349,6 +350,11 @@ Le résultat contient le ticket s'il existe ou est vide si le numéro est absent
 
 La liste retournée ne permet donc pas d'ajouter ou retirer directement des tickets du registre.
 
+### L'interface `DepotTickets` et l'utilisation d'EnumMap
+
+- **`DepotTickets`** : Cette interface étend `Catalogue<Ticket, Integer>` afin de spécialiser les opérations de stockage et de recherche spécifiquement aux tickets d'assistance et à leurs clés entières.
+- **`EnumMap`** : Utilisée pour optimiser le regroupement des tickets par état (`EtatTicket`). Les clés étant des énumérations (`OUVERT`, `EN_COURS`, `RESOLU`), l'utilisation d'un `EnumMap` garantit des performances optimales et un ordre cohérent.
+
 ## Comparaison des structures
 
 | Structure | Doublons | Ordre | Accès principal | Utilisation |
@@ -387,6 +393,18 @@ Les résultats sont triés :
 Un mot-clé `null` est refusé.
 
 Une recherche sans correspondance retourne une liste vide.
+
+### Recherche par état et par priorité
+
+- **`rechercherParEtat(EtatTicket etat)`** : 
+  - Un argument `null` est refusé.
+  - Retourne une **nouvelle liste** de tickets filtrée par l'état demandé.
+  - Si aucun ticket ne correspond, retourne une **liste vide**.
+
+- **`rechercherParPriorite(Priorite priorite)`** :
+  - Un argument `null` est refusé.
+  - Retourne une **nouvelle liste** de tickets filtrée par la priorité demandée.
+  - Si aucun ticket ne correspond, retourne une **liste vide**.
 
 ## Regroupement par état
 
