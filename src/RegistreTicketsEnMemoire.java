@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class RegistreTicketsEnMemoire implements DepotTicket {
+public class RegistreTicketsEnMemoire implements DepotTickets {
 
     private final Map<Integer, Ticket> tickets = new HashMap<>();
 

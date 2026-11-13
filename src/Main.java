@@ -80,7 +80,7 @@ public class Main {
         }
 
         verifierCondition(
-                "priorite d'un ticket resolu inchangee",
+                "priorite d'un ticket résolu inchangée",
                 changementRefuse
                         && ticketTest.getPriorite() == prioriteAvantRefus
                         && ticketTest.getHistorique().size() == tailleHistoriqueAvantRefus
@@ -288,7 +288,7 @@ public class Main {
             listeProtegee = true;
         }
 
-        if (verifierCondition("P6.8 liste retournee protegee",
+        if (verifierCondition("P6.8 liste retournée protegee",
                 listeProtegee
                         && copie.size() == 1
                         && registre.taille() == 1
@@ -467,8 +467,6 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("REUSSI : numero du lieu <= 0 refuse");
         }
-
-        System.out.println("===== FIN DES TESTS =====\n");
     }
 
     private static boolean verifierCondition(String nomTest, boolean condition) {
